@@ -5,10 +5,14 @@ chrome.contextMenus.onClicked.addListener(onClickHandler);
 chrome.extension.onRequest.addListener(onRequestHandler);
 
 // Set up context menu tree at install time.
-chrome.runtime.onInstalled.addListener(function() {
+chrome.runtime.onInstalled.addListener(addContext);
+// Set up context menu tree at browser startup.
+chrome.runtime.onStartup.addListener(addContext);
+
+function addContext() {
 	chrome.contextMenus.create({"title": chrome.i18n.getMessage("menuPageContxt"), "id": "pagecontext"});
 	chrome.contextMenus.create({"title": chrome.i18n.getMessage("menuImageContxt"), "contexts": ["image"], "id": "imagecontext"});
-});
+}
 
 function link(href) {
 	var a = document.createElement('a');
