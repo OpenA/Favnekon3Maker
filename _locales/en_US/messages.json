@@ -1,0 +1,14 @@
+{
+	"appDesc": {
+		"description": "App description.",
+		"message": "Make favicons for yor favorite tabs from photos and pictures."
+	},
+	"menuPageContxt": {
+		"description": "Page context menu title.",
+		"message": "Make favicon for this tab"
+	},
+	"menuImageContxt": {
+		"description": "Image context menu title.",
+		"message": "Make favicon from this image"
+	}
+}

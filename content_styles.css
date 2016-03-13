@@ -1,0 +1,145 @@
+#nk3__shadowBoxOverlay {
+	position: fixed;
+	z-index: 9999;
+	height: 0;
+	width: 100%;
+	left: 0;
+	top: 0;
+}
+#nk3__addURLInput {
+	top: 20px;
+	width: auto;
+	color: #555;
+	height: 34px;
+	font-size: 14px;
+	padding: 6px 12px;
+	border-radius: 4px;
+	display: inline-block;
+	line-height: 1.4;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	position: relative;
+	top: -10px;
+	left: -10px;
+	width: 99%;
+	box-shadow: 1px 1px 2px #ccc;
+}
+#nk3__overlayCloseBtn {
+	transition: .5s ease;
+	opacity: .6;
+	cursor: pointer;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 2px 9px 5px;
+	border-radius: 0 5px;
+}
+#nk3__overlayCloseBtn:before {
+	content: "x";
+}
+#nk3__overlayCloseBtn:hover {
+	color: #fff;
+	background-color: black;
+}
+#nk3__magnethingCard {
+	background-color: #ebebeb;
+	box-shadow: 0 9px 19px -8px rgba(0,0,0,.8), inset 0 0 90px 3px #fff;
+	position: relative;
+	margin-left: 35%;
+	margin-right: 35%;
+	margin-top: 1%;
+	border-radius: 5px;
+	padding: 10px;
+}
+
+#nk3__workaroundImage {
+	max-width: 450px;
+	max-height: 450px;
+}
+
+.img-fwh {
+	min-width: 200px;
+	min-height: 200px;
+}
+
+#nk3__resizeboxOverlay {
+	position: absolute;
+}
+
+.tb-sect {
+	display: inline-block;
+}
+
+.p--c {
+	float: left;
+	padding-right: 10px;
+}
+
+.i--c {
+	padding-left: 1em;
+	border-left: 1px dashed #bbb;
+}
+
+.pre-fav {
+	border: 1px dashed transparent;
+	padding: 5px;
+	border-radius: 8px;
+}
+
+.pre-fav.ch-x-k {
+	border-color: #ccc;
+}
+
+.drop-sp-imgstb {
+	border: 3px dashed #8a92a5;
+	border-radius: 10px;
+}
+
+.pasl-col-sect {
+	height: 100%;
+	display: inline-block;
+}
+
+.pasl-row-sect {
+	width: 100%;
+	display: block;
+}
+
+.pasl-dark {
+	background-color: rgba(33,33,33, .6);
+}
+
+.pasl-rcons {
+	background-color: white;
+	border: 1px solid black;
+	position: absolute;
+	opacity: 0.5;
+	height: 5px;
+	width: 5px;
+}
+.pasl-selection-area {
+	position: relative;
+	cursor: move;
+}
+
+#rcon_t-l {
+	top: -5px;
+	left: -5px;
+	cursor: nw-resize;
+}
+#rcon_t-r {
+	top: -5px;
+	right: -5px;
+	cursor: ne-resize;
+}
+#rcon_b-l {
+	bottom: -5px;
+	left: -5px;
+	cursor: sw-resize;
+}
+#rcon_b-r {
+	bottom: -5px;
+	right: -5px;
+	cursor: se-resize;
+}

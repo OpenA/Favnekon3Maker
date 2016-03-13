@@ -1,0 +1,14 @@
+{
+	"appDesc": {
+		"description": "App description.",
+		"message": "Создавайте фавиконы для каждой вкладки из любых изображений с вашего компьютера или интернета."
+	},
+	"menuPageContxt": {
+		"description": "Page context menu title.",
+		"message": "Сделать фавикон для этой вкладки"
+	},
+	"menuImageContxt": {
+		"description": "Image context menu title.",
+		"message": "Сделать фавикон из этого изображения"
+	}
+}
