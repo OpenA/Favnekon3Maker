@@ -20,14 +20,22 @@ function link(href) {
 	return a;
 }
 
+function stubFn() {}
+
 function onClickHandler(info, tab) {
-	if (info.menuItemId === 'imagecontext' && link(info.srcUrl).host !== link(info.pageUrl).host) {
-		onRequestHandler({event: 'XHR', uri: info.srcUrl}, {id: chrome.runtime.id, url: info.pageUrl, tab: tab, frameId: 0}, function(){})
-	} else {
-		chrome.tabs.sendMessage(tab.id, {
-			action: 'pushKat',
-			uri: (info.menuItemId === 'imagecontext' ? info.srcUrl : '')
-		}, function(){});
+	switch (info.menuItemId) {
+		case 'imagecontext':
+			var pg_host = link(info.pageUrl).host,
+				img_host = link(info.srcUrl).host || pg_host;
+			if (img_host !== pg_host) {
+				onRequestHandler({event: 'XHR', uri: info.srcUrl}, {id: chrome.runtime.id, url: info.pageUrl, tab: tab, frameId: 0}, stubFn)
+				break;
+			}
+		case 'pagecontext':
+			chrome.tabs.sendMessage(tab.id, {
+				action: 'pushKat',
+				uri: info.srcUrl
+			}, stubFn);
 	}
 }
 
