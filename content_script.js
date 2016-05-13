@@ -228,10 +228,10 @@ function imageLoad() {
 	
 	if (this.width > this.height) {
 		eObj.w = this.height;
-		eObj.x = this.width - this.height;
+		eObj.x = (this.width - this.height) / 2;
 	} else if (this.width < this.height) {
 		eObj.h = this.width;
-		eObj.y = this.height - this.width;
+		eObj.y = (this.height - this.width) / 2;
 	}
 	
 	pasL.select(this, eObj);
