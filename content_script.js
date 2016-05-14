@@ -4,9 +4,9 @@ var Favnekon = {
 	link: _Zetup('link', {'id': 'favn__3kon', 'rel': 'shortcut icon', 'type': 'image/x-icon', 'href': sessionStorage.getItem('Favnekon')})
 }
 
-var overlay = _Zetup('div', {'id': 'nk3__shadowBoxOverlay', 'html': '<div id="nk3__magnethingCard"><input id="nk3__addURLInput" type="text" placeholder="Image URL"><label id="nk3__overlayCloseBtn"></label><table><tbody class="tb-sect p--c"><tr><td><canvas id="nk3__previewIcon" class="pre-fav'+
-	(Favnekon.apply ? ' ch-x-k' : '') +'" width="16" height="16"></canvas></td></tr><tr><td><img id="nk3__faviconDefault" class="pre-fav'+
-	(Favnekon.apply ? '' : ' ch-x-k') +'" width="16" height="16"></td></tr></tbody><tbody class="tb-sect i--c"><tr><td><img id="nk3__workaroundImage"></td></tr></tbody></table>'}, {'click': function(e) {
+var overlay = _Zetup('div', {'id': 'nk3__shadowBoxOverlay', 'html': '<div id="nk3__magnethingCard"><input id="nk3__addURLInput" type="text" placeholder="Image URL"><label id="nk3__overlayCloseBtn"></label><citab><canvas id="nk3__previewIcon" class="pre-fav'+
+	(Favnekon.apply ? ' ch-x-k' : '') +'" width="16" height="16"></canvas><img id="nk3__faviconDefault" class="pre-fav'+
+	(Favnekon.apply ? '' : ' ch-x-k') +'" width="16" height="16"></citab><droparea><img id="nk3__workaroundImage"></droparea>'}, {'click': function(e) {
 		switch (e.target.id) {
 			case 'nk3__overlayCloseBtn':
 				this.remove();
@@ -33,14 +33,12 @@ var overlay = _Zetup('div', {'id': 'nk3__shadowBoxOverlay', 'html': '<div id="nk
 	contxt = canvas.getContext("2d");
 	contxt.imageSmoothingEnabled = true;
 	url_area.oninput = function(e) {
-		if (this.value.match(/(?:https?\:\/\/[^\/]+|data\:image)\/[^\s]+/)) {
-			var uri = /(https?\:\/\/[^\/]+\/[^\s]+)|(data\:image\/[^\s]+)/.exec(this.value);
-			if (uri[2]) {
-				pushKat(uri[2]);
-				this.value = '';
-			} else if (uri[1]) {
-				chrome.extension.sendRequest({event: 'XHR', uri: uri[1]});
-			}
+		var uri = /(https?\:\/\/[^\/]+\/[^\s]+)|(data\:image\/[^\s]+)/.exec(this.value) || [];
+		if (uri[1]) {
+			chrome.extension.sendRequest({event: 'XHR', uri: uri[1]});
+		} else if (uri[2]) {
+			pushKat(uri[2]);
+			this.value = '';
 		}
 	}
 	_Zetup(wimage.parentNode, {}, {
@@ -209,15 +207,11 @@ function pushKat(imgSrc) {
 	wimage.src = imgSrc || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpza2V0Y2g9Imh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaC9ucyIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjE1MHB4IiB2aWV3Qm94PSIwIDAgMjAwIDE1MCIgdmVyc2lvbj0iMS4xIj48ZyBpZD0iUGFnZS0xIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBza2V0Y2g6dHlwZT0iTVNQYWdlIj48cGF0aCBkPSJNMTM5LjY4NzUsNTkuNzY1NDMxNyBMMTM5LjY4NzUsNjYuNDA1NjM1NiBMMTUzLjUwMDk3Nyw2Ni40MDU2MzU2IEw5OS44ODAzNzEyLDkwLjc0NTg1MjIgTDQ2LjI1OTc2NTcsNjYuNDA1NjM1NiBMNjEuNzE1NDk0OSw2Ni40MDU2MzU2IEw2MS43MTU0OTQ5LDU5Ljc2NTQzMTYgTDEzOS42ODc1LDU5Ljc2NTQzMTcgWiIgaWQ9IlNoYXBlIiBmaWxsPSIjOEE5MkE1IiBza2V0Y2g6dHlwZT0iTVNTaGFwZUdyb3VwIi8+PC9nPjwvc3ZnPg==';
 	if (!imgSrc) {
 		pasL.box.remove();
-		wimage.classList.remove('img-fwh');
 	}
 	document.body.appendChild(overlay);
 }
 
 function imageLoad() {
-	
-	if (!this.height || !this.width)
-		this.className = 'img-fwh';
 	
 	var eObj = {
 		onSelectEnd: drawFavnekon,
@@ -258,9 +252,9 @@ function _Zetup(el, attr, events) {
 		if (attr) {
 			for (var key in attr) {
 				attr[key] === undefined ? el.removeAttribute(key) :
-				key === 'html'    ? el.innerHTML   = attr[key] :
-				key === 'text'    ? el.textContent = attr[key] :
-				key in el         ? el[key]        = attr[key] :
+				key === 'html' ? el.innerHTML   = attr[key] :
+				key === 'text' ? el.textContent = attr[key] :
+				key in el      ? el[key]        = attr[key] :
 				el.setAttribute(key, attr[key]);
 			}
 		}
