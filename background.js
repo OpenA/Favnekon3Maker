@@ -1,17 +1,18 @@
+var _App = (typeof browser !== 'undefined' ? browser : chrome);
 
 // Set up onClick menu item action.
-chrome.contextMenus.onClicked.addListener(onClickHandler);
+_App.contextMenus.onClicked.addListener(onClickHandler);
 // Set up request application action.
-chrome.extension.onRequest.addListener(onRequestHandler);
+_App.runtime.onMessage.addListener(onMessageHandler);
 
 // Set up context menu tree at install time.
-chrome.runtime.onInstalled.addListener(addContext);
+_App.runtime.onInstalled.addListener(addContext);
 // Set up context menu tree at browser startup.
-chrome.runtime.onStartup.addListener(addContext);
+_App.runtime.onStartup.addListener(addContext);
 
 function addContext() {
-	chrome.contextMenus.create({"title": chrome.i18n.getMessage("menuPageContxt"), "id": "pagecontext"});
-	chrome.contextMenus.create({"title": chrome.i18n.getMessage("menuImageContxt"), "contexts": ["image"], "id": "imagecontext"});
+	_App.contextMenus.create({'title': _App.i18n.getMessage('menuPageContxt'), 'id': 'pagecontext'});
+	_App.contextMenus.create({'title': _App.i18n.getMessage('menuImageContxt'), 'contexts': ['image'], 'id': 'imagecontext'});
 }
 
 function link(href) {
@@ -28,37 +29,34 @@ function onClickHandler(info, tab) {
 			var pg_host = link(info.pageUrl).host,
 				img_host = link(info.srcUrl).host || pg_host;
 			if (img_host !== pg_host) {
-				onRequestHandler({event: 'XHR', uri: info.srcUrl}, {id: chrome.runtime.id, url: info.pageUrl, tab: tab, frameId: 0}, stubFn)
+				onMessageHandler({ uri: info.srcUrl }, { id: _App.runtime.id, url: info.pageUrl, tab: tab, frameId: 0 }, stubFn);
 				break;
 			}
 		case 'pagecontext':
-			chrome.tabs.sendMessage(tab.id, {
+			_App.tabs.sendMessage(tab.id, {
 				action: 'pushKat',
 				uri: info.srcUrl
 			}, stubFn);
 	}
 }
 
-function onRequestHandler(request, sender, sendResponse) {
-	switch (request.event) {
-		case 'XHR':
-			var xhr = new XMLHttpRequest(); 
-				xhr.responseType = 'blob';
-				xhr.onreadystatechange = function() { 
-					if (this.readyState == 4 && this.status == 200) { 
-						var reader = new FileReader();
-							reader.onload = function() {
-								if (this.readyState > 0) {
-									chrome.tabs.sendMessage(sender.tab.id, {
-										action: 'pushKat',
-										uri: this.result
-									});
-								}
-							}
-							reader.readAsDataURL(this.response);
+function onMessageHandler(request, sender, sendResponse) {
+	var xhr = new XMLHttpRequest(); 
+		xhr.responseType = 'blob';
+		xhr.onreadystatechange = function() { 
+			if (this.readyState == 4 && this.status == 200) { 
+				var reader = new FileReader();
+					reader.onload = function() {
+						if (this.readyState === FileReader['DONE']) {
+							_App.tabs.sendMessage(sender.tab.id, {
+								action: 'pushKat',
+								uri: this.result
+							});
+						}
 					}
-				}
-				xhr.open('GET', request.uri, true);
-				xhr.send(null);
-	}
+					reader.readAsDataURL(this.response);
+			}
+		}
+		xhr.open('GET', request.uri, true);
+		xhr.send(null);
 }

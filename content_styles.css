@@ -67,6 +67,15 @@
 	position: absolute;
 }
 
+#nk3__dropDownArrow {
+	border: 3px dashed #8a92a5;
+	border-radius: 10px;
+	cursor: pointer;
+	width: 200px;
+	height: 150px;
+	background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpza2V0Y2g9Imh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaC9ucyIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjE1MHB4IiB2aWV3Qm94PSIwIDAgMjAwIDE1MCIgdmVyc2lvbj0iMS4xIj48cGF0aCBkPSJNMTM5LjcsNTkuOCBMMTM5LjcsNjYuNCBMMTUzLjUsNjYuNCBMOTkuOSw5MC43IEw0Ni4zLDY2LjQgTDYxLjcsNjYuNCBMNjEuNyw1OS44IEwxMzkuNyw1OS44IFoiIGZpbGw9IiM4QTkyQTUiLz48L3N2Zz4=');
+}
+
 .tb-sect {
 	display: inline-block;
 }
@@ -93,11 +102,6 @@ droparea {
 
 .pre-fav.ch-x-k {
 	border-color: #ccc;
-}
-
-.drop-sp-imgstb {
-	border: 3px dashed #8a92a5;
-	border-radius: 10px;
 }
 
 .pasl-col-sect {

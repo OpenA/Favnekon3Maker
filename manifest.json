@@ -1,7 +1,7 @@
 {
 	"name": "Favnekon3 Maker",
 	"description": "__MSG_appDesc__",
-	"version": "1.1",
+	"version": "1.6",
 	"default_locale": "en_US",
 	"background": {
 		"scripts": ["background.js"]
@@ -21,9 +21,7 @@
 	"permissions": [
 		"tabs",
 		"contextMenus",
-		"https://*/*",
-		"http://*/*",
-		"ftp://*/*"
+		"<all_urls>"
 	],
 	"icons": {
 		"16" : "push16.png",
