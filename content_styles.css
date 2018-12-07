@@ -1,6 +1,6 @@
 #nk3__shadowBoxOverlay {
 	position: fixed;
-	z-index: 9999;
+	z-index: 9999999999999999999999999999;
 	height: 0;
 	width: 100%;
 	left: 0;
@@ -55,18 +55,15 @@
 	border-radius: 5px;
 	padding: 10px;
 }
-
 #nk3__workaroundImage {
 	min-width: 125px;
 	min-height: auto;
 	max-width: 450px;
 	max-height: auto;
 }
-
 #nk3__resizeboxOverlay {
 	position: absolute;
 }
-
 #nk3__dropDownArrow {
 	border: 3px dashed #8a92a5;
 	border-radius: 10px;
@@ -76,32 +73,93 @@
 	background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpza2V0Y2g9Imh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaC9ucyIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjE1MHB4IiB2aWV3Qm94PSIwIDAgMjAwIDE1MCIgdmVyc2lvbj0iMS4xIj48cGF0aCBkPSJNMTM5LjcsNTkuOCBMMTM5LjcsNjYuNCBMMTUzLjUsNjYuNCBMOTkuOSw5MC43IEw0Ni4zLDY2LjQgTDYxLjcsNjYuNCBMNjEuNyw1OS44IEwxMzkuNyw1OS44IFoiIGZpbGw9IiM4QTkyQTUiLz48L3N2Zz4=');
 }
 
+* + #nk3__dropDownArrow {
+	display: none;
+}
+
 .tb-sect {
 	display: inline-block;
 }
 
 citab {
-	float: left;
 	padding-right: 10px;
-	display: inline-table;
+	display: table-cell;
 }
 
 droparea {
-	display: inline-block;
+	width: 100%;
+	display: table-cell;
 	padding-left: 1em;
 	border-left: 1px dashed #bbb;
+}
+
+droparea:before {
+	content: "";
+	display: table-row;
+}
+
+.block {
+	top: -1px;
+	padding: 1px;
+	position: absolute;
+}
+.block:before {
+	content: "";
+	left: -4px;
+	top: -4px;
+	padding: 5px;
+	background: url(data:image/gif;base64,R0lGODlhCgAKAPABAKqqqgAAACH5BAUKAAEALAAAAAAKAAoAQAIVjANwlqgNmZun1aTutAzr/IQL1y0FADs=) no-repeat 100%;
+	position: absolute;
+}
+
+.brithnes:before {
+	content: "";
+	padding: 3px 0;
+	top: -4px;
+	left: 50%;
+	border: 1px solid #ccc;
+	border-right-color: #fff;
+	position: absolute;
+}
+
+.brithnes {
+	border: 1px solid #ccc;
+	border-bottom-color: #fff;
+	margin: 8px 0;
+	position: relative;
 }
 
 .pre-fav {
 	border: 1px dashed transparent;
 	padding: 5px;
 	border-radius: 8px;
-	display: table-row;
+	display: block;
 	margin: 2px;
 }
 
 .pre-fav.ch-x-k {
 	border-color: #ccc;
+}
+
+.fill-fav {
+	cursor: pointer;
+	font: 14px serif;
+	color: #8a92a5;
+}
+
+.fill-fav:before {
+	content: "▫";
+	position: absolute;
+	left: 1px;
+}
+
+.fill-fav.ch-x-k:before {
+	content: "▪";
+	color: green;
+}
+
+.fill-fav:after {
+	content: attr(itemprop);
 }
 
 .pasl-col-sect {
