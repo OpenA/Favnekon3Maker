@@ -1,69 +1,103 @@
 
-const Favnekon = {
-	id     : 'n3kon3kt',
-	apply  : sessionStorage['Favnekon'],
+const Q_HEIGHT = 32;
+
+const Favn3kon = {
+	
+	id   : 'n3kon3kt',
+	apply: false,
+	
+	pixelData  : null,
+	brightness : -0,
+	colorAjusts: [],
+	
 	pushKat: function(src) {
 		if (!src) {
 			imageReset();
 		} else {
-			this.drop.prepend( pasL.box, this.image );
-			this.image.src = src;
-			this.canvas.style = '';
+			drop.prepend( pasL.box, image );
+			image.src = src;
+			canvas.style = '';
 		}
-		document.body.appendChild(Favnekon.overlay);
+		document.body.appendChild(overlay);
+	},
+	initMe: function({ apply, pixelData, brightness, colorAjusts }) {
+		if (pixelData) {
+			let changes;
+			
+			if ((changes = Boolean (brightness)))
+				overlay.querySelector('.brithnes > .block').style.left = `${ (this.brightness = brightness) + 50 }%`;
+			
+			if ((changes = Boolean (colorAjusts.length)))
+				overlay.querySelectorAll(`[itemprop="${ Object.assign(this.colorAjusts, colorAjusts).join('"],[itemprop="') }"]`).forEach(fi => fi.classList.add('ch-x-k'));
+			
+			this.pixelData = Uint8ClampedArray.from(pixelData);
+			
+			if (changes) {
+				this.applyFilters();
+			} else
+				contxt.putImageData(new ImageData (this.pixelData, Q_HEIGHT, Q_HEIGHT), 0, 0);
+			
+			if (apply) {
+				link.href  = canvas.toDataURL();
+				this.apply = canvas.classList.toggle('ch-x-k');
+				deffav.classList.remove('ch-x-k');
+			}
+		}
+		document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', onReady) : onReady();
+	},
+	applyFilters: function() {
+		
+		const pixels = Uint8ClampedArray.from(this.pixelData);
+		
+		ColorFilter['expose'](pixels, this.brightness);
+		
+		for (let name of this.colorAjusts)
+			ColorFilter[name](pixels);
+		
+		contxt.putImageData(new ImageData (pixels, Q_HEIGHT,  Q_HEIGHT), 0, 0);
 	},
 	handleEvent: function({ target }) {
 		switch (target.id) {
 			case 'nk3__overlayCloseBtn':
-				this.overlay.remove();
+				overlay.remove();
 				break;
 			case 'nk3__dropDownArrow':
 				target.firstElementChild.click();
 				break;
 			case 'nk3__faviconDefault':
-				this.apply = this.canvas.classList.toggle('ch-x-k');
-				this.def.classList.add('ch-x-k');
-				sessionStorage.removeItem('Favnekon');
-				this.link.href = this.def.src;
+				this.apply = canvas.classList.toggle('ch-x-k');
+				deffav.classList.add('ch-x-k');
+				link.href = deffav.src;
+				stFavnekonData();
 				break;
 			case 'nk3__previewIcon':
 				this.apply = target.classList.toggle('ch-x-k');
-				this.def.classList.remove('ch-x-k');
-				sessionStorage.setItem('Favnekon', (
-					this.link.href = target.toDataURL()
-				));
+				deffav.classList.remove('ch-x-k');
+				stFavnekonData();
 				break;
 			case 'nk3__addFilter':
-				const name = target.getAttribute('itemprop');
+				let name = target.getAttribute('itemprop');
 				if (target.classList.toggle('ch-x-k')) {
-					Filter.applied.push(name);
-					if (!this.apply)
-						return;
-					const imageData = contxt.getImageData(0, 0, 16, 16);
-					Filter[name](imageData.data);
-					contxt.putImageData(imageData, 0, 0);
+					this.colorAjusts.push(name);
 				} else {
-					Filter.applied.splice(Filter.applied.indexOf(name), 1);
-					if (!this.apply)
-						return;
-					pasL.draw();
+					this.colorAjusts.splice(
+						this.colorAjusts.indexOf(name), 1);
 				}
-				sessionStorage.setItem('Favnekon', (
-					this.link.href =  this.canvas.toDataURL()
-				));
+				this.applyFilters();
+				stFavnekonData();
 		}
 	}
 };
 
-Favnekon.link    = _setup('link', { id: 'favn__3kon', rel: 'icon', type: 'image/png', href: Favnekon.apply });
-Favnekon.image   = _setup('img' , { id: 'nk3__workaroundImage' }, { error: imageReset, load: imageLoad });
-Favnekon.overlay = _setup('div' , { id: 'nk3__shadowBoxOverlay', html: `
+const link    = _setup('link', { id: 'favn__3kon', rel: 'icon' });
+const image   = _setup('img' , { id: 'nk3__workaroundImage' }, { error: imageReset, load: imageLoad });
+const overlay = _setup('div' , { id: 'nk3__shadowBoxOverlay', html: `
 	<div id="nk3__magnethingCard">
 		<input id="nk3__addURLInput" type="text" placeholder="Image URL">
 		<label id="nk3__overlayCloseBtn"></label>
 		<citab>
-			<canvas id="nk3__previewIcon" width="16" height="16" class="pre-fav${ Favnekon.apply ? ' ch-x-k" style="background: url('+Favnekon.apply+') no-repeat center;' : '' }"></canvas>
-			<img id="nk3__faviconDefault" width="16" height="16" class="pre-fav${ Favnekon.apply ? '' : ' ch-x-k' }">
+			<canvas id="nk3__previewIcon" width="${Q_HEIGHT}" height="${Q_HEIGHT}" class="pre-fav"></canvas>
+			<img id="nk3__faviconDefault" width="${Q_HEIGHT}" height="${Q_HEIGHT}" class="pre-fav ch-x-k">
 			<div id="nk3__addFilter" class="fill-fav" itemprop="gray"></div>
 			<div id="nk3__addFilter" class="fill-fav" itemprop="sepia"></div>
 			<div id="nk3__addFilter" class="fill-fav" itemprop="invert"></div>
@@ -80,33 +114,30 @@ Favnekon.overlay = _setup('div' , { id: 'nk3__shadowBoxOverlay', html: `
 		</droparea>
 	</div>`
 }, { 
-	click: Favnekon
+	click: Favn3kon
 });
 
-Favnekon.canvas = Favnekon.overlay.querySelector('#nk3__previewIcon');
-Favnekon.def    = Favnekon.overlay.querySelector('#nk3__faviconDefault');
-Favnekon.drop   = _setup(Favnekon.overlay.querySelector('droparea'), null, { dragover: e => { e.preventDefault() }, drop: fileUpload });
+const canvas = overlay.querySelector('#nk3__previewIcon'),
+      contxt = canvas.getContext('2d'),
+      deffav = overlay.querySelector('#nk3__faviconDefault'),
+      drop   = _setup(overlay.querySelector('droparea'), null, { dragover: e => { e.preventDefault() }, drop: fileUpload });
 
-Favnekon.drop.children['nk3__dropDownArrow'].addEventListener('change', fileUpload);
-Favnekon.overlay.querySelector('.brithnes').addEventListener('mousedown', barChanger);
-
-chrome.runtime.connect(chrome.runtime.id, { name: Favnekon.id })
-   .onMessage.addListener(({ action, data }) => { Favnekon[action](data) });
-
-Favnekon.overlay
+drop.children['nk3__dropDownArrow'].addEventListener('change', fileUpload);
+overlay.querySelector('.brithnes').addEventListener('mousedown', barChanger);
+overlay
 	.querySelector('#nk3__addURLInput')
 	.addEventListener('input', ({ target }) => {
 		const [, url, data] = /(https?\:\/\/[^\/]+\/[^\s]+)|(data\:image\/[^\s]+)/.exec(target.value) || [];
 		if (url) {
-			chrome.runtime.sendMessage(url);
+			chrome.runtime.sendMessage({ name: 'image:3plz', data: url });
 		} else if (data) {
-			Favnekon.pushKat(data);
+			Favn3kon.pushKat(data);
 			target.value = '';
 		}
 	});
 
-const contxt  = Favnekon.canvas.getContext('2d');
-      contxt.drawImage(Favnekon.image, 0, 0, (contxt.clearW = 16), (contxt.clearH = 16));
+chrome.runtime.onMessage.addListener(({ action, data }) => { Favn3kon[action](data) });
+chrome.runtime.sendMessage({ name: Favn3kon.id });
 
 const pasL = (() => {
 	
@@ -242,8 +273,8 @@ const pasL = (() => {
 		coords.ratio = [img.naturalWidth / img.width, img.naturalHeight / img.height];
 		coords.x1 = points.x || 0;
 		coords.y1 = points.y || 0;
-		coords.w  = points.w || 16;
-		coords.h  = points.h || 16;
+		coords.w  = points.w || Q_HEIGHT;
+		coords.h  = points.h || Q_HEIGHT;
 		for (var vec in points) {
 			SelectArea[vec] = points[vec];
 		}
@@ -264,14 +295,11 @@ const pasL = (() => {
 	}
 })();
 
-const Filter = {
-	
-	brightness : -0,
-	applied    : [],
+const ColorFilter = {
 	
 	'gray': (data) => {
-		for (var i = 0; i < data.length; i += 4) {
-			data[i + 2] = data[i + 1] = data[i] = (0.21 * data[i] + 0.72 * data[i + 1] + 0.07 * data[i + 2]);
+		for (let i = 0; i < data.length; i += 4) {
+			data[i + 2] = data[i + 1] = data[i] = (0.21 * data[i] + 0.72 * data[i+1] + 0.07 * data[i+2]);
 		}
 	},
 	'sepia': RGB_transform.bind(null, [
@@ -307,36 +335,41 @@ const Filter = {
 	'invert': (data) => {
 		for (var i = 0; i < data.length; i += 4) {
 			data[i]     = 255 - data[i];
-			data[i + 1] = 255 - data[i + 1];
-			data[i + 2] = 255 - data[i + 2];
+			data[i + 1] = 255 - data[i+1];
+			data[i + 2] = 255 - data[i+2];
 		}
 	},
-	'expose': (data) => {
-		for (var i = 0, wb = Math.round(2.55 * this.brightness); i < data.length; i += 4) {
-			data[i]     = data[i]     + wb;
-			data[i + 1] = data[i + 1] + wb;
-			data[i + 2] = data[i + 2] + wb;
+	// Apple-like expose filter ( brightness + contrast [-50 ... 50] )
+	'expose': (data, ajust) => {
+		var factor = (259 * (ajust + 255)) / (255 * (259 - ajust));
+		for (let i = 0; i < data.length; i += 4) {
+			data[i]     = factor * (data[i]   + ajust - 128) + 128;
+			data[i + 1] = factor * (data[i+1] + ajust - 128) + 128;
+			data[i + 2] = factor * (data[i+2] + ajust - 128) + 128;
 		}
 	}
 }
 
-document.addEventListener('DOMContentLoaded', function onReady() {
+function onReady() {
 	
-	this.removeEventListener('DOMContentLoaded', onReady);
+	document.removeEventListener('DOMContentLoaded', onReady);
 	
-	const head = this.getElementsByTagName('head')[0],
-	    favico = head.querySelectorAll('link[rel$="icon"], link[rel="icon"]');
+	const head = document.getElementsByTagName('head')[0];
+	var favico = head.querySelectorAll('link[rel$="icon"], link[rel="icon"]');
 	
 	if (favico.length) {
 		
-		Favnekon.def.src = Favnekon.apply ? favico[0].href : (Favnekon.link.href = favico[0].href);
+		deffav.src = Favn3kon.apply ? favico[0].href : (link.href = favico[0].href);
 		
 		for (var i = 0; i < favico.length; i++) {
 			head.removeChild(favico[i]);
 		}
+	} else if ((favico = head.querySelector('meta[itemprop="image"]'))) {
+		
+		deffav.src = Favn3kon.apply ? favico.content : (link.href = favico.content);
 	}
-	head.appendChild(Favnekon.link);
-});
+	head.appendChild(link);
+}
 
 function RGB_transform(m, data) {
 	for (var i = 0; i < data.length; i += 4) {
@@ -359,49 +392,38 @@ function RGBA_transform(m, data) {
 
 function barChanger(e) {
 	e.preventDefault();
+
+	const bar = this.firstElementChild;
+	const { left, width } = this.getBoundingClientRect();
 	
-	const rect = this.getBoundingClientRect();
-	const bar  = this.firstElementChild;
-	const imageData = contxt.getImageData(0, 0, 16, 16);
-	
-	const calc = (n) => {
-		if (n > 100) {
+	const barMove = ({ clientX }) => {
+		let pct = Math.round((clientX - left) / width * 100);
+		if (pct > 100) {
 			bar.style.left = '100%';
-			Filter['brightness'](100, imageData.data);
-		} else if (n < 0) {
+			Favn3kon.brightness = 50;
+		} else if (pct < 0) {
 			bar.style.left = '0';
-			Filter['brightness'](-100, imageData.data);
+			Favn3kon.brightness = -50;
+		} else if (pct > 48 && pct < 51) {
+			bar.style.left = '50%';
+			Favn3kon.brightness = 0;
 		} else {
-			if (n > 48 && n < 51) {
-				bar.style.left = '50%';
-				Filter['brightness'](0, imageData.data);
-			} else {
-				bar.style.left = (n = Math.round(n)) +'%';
-				Filter['brightness']((n < 50 ? n * -2 : n * 2), imageData.data);
-			}
+			bar.style.left = `${pct}%`;
+			Favn3kon.brightness = pct - 50;
 		}
-		contxt.putImageData(imageData, 0, 0);
+		Favn3kon.applyFilters();
 	};
 	
-	let x = (e.clientX - rect.left) / ('width' in rect ? rect.width : (rect.width = rect.right - rect.left));
-	//let [n, p] = x > 1 ? [100, 1] : x < 0 ? [0, -1] : (x *= 100) > 48 && x < 51 ? [50, 0.5] : [Math.round(x), Math.round(x) / 100];
-	//bar.style.left = n +'%';
-	bar.style['background-color'] = 'green';
-	calc(x * 100);
-	const barMove = (e) => {
-		let x = (e.clientX - rect.left) / rect.width;
-		//n = x > 1 ? 100 : x < 0 ? 0 : (x *= 100) > 48 && x < 51 ? 50 : Math.round(x);
-		//let [n, p] = x > 1 ? [100, 1] : x < 0 ? [0, -1] : (x *= 100) > 48 && x < 51 ? [50, 0] : [Math.round(x), Math.round(x) / 100];
-		//Filter['brightness'](p, imageData.data);
-		//contxt.putImageData(imageData, 0, 0);
-		//bar.style.left = n +'%';
-		calc(x * 100);
-	}
 	const barEnd = () => {
+		stFavnekonData();
 		bar.style['background-color'] = 'inherit';
 		window.removeEventListener('mousemove', barMove, false);
 		window.removeEventListener('mouseup', barEnd, false);
 	}
+	
+	bar.style['background-color'] = 'green';
+	barMove(e);
+	
 	window.addEventListener('mousemove', barMove, false);
 	window.addEventListener('mouseup', barEnd, false);
 }
@@ -427,7 +449,7 @@ function imageLoad(e) {
 }
 
 function imageReset() {
-	Favnekon.image.remove();
+	image.remove();
 	pasL.box.remove();
 }
 
@@ -436,48 +458,55 @@ function fileUpload(e) {
 	var data = e.dataTransfer || e.target,
 		file = data.files[0];
 	if (file && /image\//.test(file.type)) {
-		Favnekon.pushKat( URL.createObjectURL(file) );
+		Favn3kon.pushKat( URL.createObjectURL(file) );
 	}
 }
 
 function drawFavnekon(X, Y, W, H) {
 	try {
-		contxt.clearRect(0, 0, contxt.clearW, contxt.clearH);
+		contxt.clearRect(0, 0, Q_HEIGHT, Q_HEIGHT);
 	} finally {
-		var step = Math.ceil(Math.log((H > W ? H : W) / 16) / Math.log(2));
+		let step = Math.ceil(Math.log((H > W ? H : W) / Q_HEIGHT) / Math.log(2));
 		if (step <= 1) {
-			contxt.drawImage(Favnekon.image, X, Y, W, H, 0, 0, 16, 16);
+			contxt.drawImage(image, X, Y, W, H, 0, 0, Q_HEIGHT, Q_HEIGHT);
 		} else {
-			let width  = (contxt.clearW = W) * 0.5,
-				height = (contxt.clearH = H) * 0.5,
+			let width  = W * 0.5,
+				height = H * 0.5,
 				oc     = _setup('canvas', { width, height }),
 				octx   = oc.getContext('2d');
 				
-			octx.drawImage(Favnekon.image, X, Y, W, H, 0, 0, width, height);
+			octx.drawImage(image, X, Y, W, H, 0, 0, width, height);
 			
 			while ((step--) > 2) {
 				width  *= 0.5;
 				height *= 0.5;
 				octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
 			}
-			
-			contxt.drawImage(oc, 0, 0, width, height, 0, 0, 16, 16);
+			contxt.drawImage(oc, 0, 0, width, height, 0, 0, Q_HEIGHT, Q_HEIGHT);
 		}
 		
-		if (Filter.applied.length) {
-			const imageData = contxt.getImageData(0, 0, 16, 16);
-			for (let name of Filter.applied) {
-				Filter[name](imageData.data);
-			}
-			contxt.putImageData(imageData, 0, 0);
-		}
+		Favn3kon.pixelData = contxt.getImageData(0, 0, Q_HEIGHT, Q_HEIGHT).data;
 		
-		if (Favnekon.apply) {
-			sessionStorage.setItem('Favnekon', (
-				Favnekon.link.href = Favnekon.canvas.toDataURL()
-			));
-		}
+		if ( Favn3kon.brightness || Favn3kon.colorAjusts.length )
+			Favn3kon.applyFilters();
+		
+		stFavnekonData();
 	}
+}
+
+function stFavnekonData() {
+	const { apply, pixelData, brightness, colorAjusts } = Favn3kon;
+	
+	if (apply)
+		link.href = canvas.toDataURL();
+	
+	chrome.runtime.sendMessage({
+		name: 'save:3plz',
+		data: {
+			pixelData: Array.from(pixelData),
+			apply, brightness, colorAjusts
+		}
+	});
 }
 
 function _setup(el, _Attrs, _Events) {
@@ -513,4 +542,16 @@ function _setup(el, _Attrs, _Events) {
 		}
 	}
 	return el;
+}
+
+if (!('width' in DOMRect.prototype)){
+	Object.defineProperty(DOMRect.prototype, 'width', {
+		configurable: true,
+		enumerable: true,
+		get: function width() {
+			const value = this.right - this.left;
+			Object.defineProperty(this, 'width', { value });
+			return value;
+		}
+	});
 }

@@ -133,8 +133,11 @@ droparea:before {
 	border: 1px dashed transparent;
 	padding: 5px;
 	border-radius: 8px;
-	display: block;
+	display: block!important;
 	margin: 2px;
+	box-sizing: initial;
+	max-width: 18px;
+	max-height: 18px;
 }
 
 .pre-fav.ch-x-k {
