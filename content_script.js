@@ -127,7 +127,7 @@ overlay.querySelector('.brithnes').addEventListener('mousedown', barChanger);
 overlay
 	.querySelector('#nk3__addURLInput')
 	.addEventListener('input', ({ target }) => {
-		const [, url, data] = /(https?\:\/\/[^\/]+\/[^\s]+)|(data\:image\/[^\s]+)/.exec(target.value) || [];
+		const [, url, data] = /((?:https?\:)?\/\/[^\/]+\/[^\s]+)|(data\:image\/[^\s]+)/.exec(target.value) || [];
 		if (url) {
 			chrome.runtime.sendMessage({ name: 'image:3plz', data: url });
 		} else if (data) {
@@ -144,7 +144,7 @@ const pasL = (() => {
 	const box = _setup('div', { id: 'pasL_box', style: 'position: absolute;' }),
 	   shift  = { ptp: '', sX: 0, sY: 0, eX: 0, eY: 0 },
 	   coords = { x1: 0, y1: 0, w: 0, h: 0, x2: 0, y2: 0 },
-	   events = { mousemove: areaMovement, mouseup: () => _setup(window, drawImage(), { remove: events }) },
+	   events = { mousemove: areaMovement, mouseup: () => { _setup(window, null, { remove: events }); drawImage(); }},
 	   behind = {
 		top   : _setup('div', { id: 'pasl_behind_top'   , class: 'pasl-row-sect pasl-dark' }),
 		right : _setup('div', { id: 'pasl_behind_right' , class: 'pasl-col-sect pasl-dark' }),
