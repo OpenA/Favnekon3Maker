@@ -6,7 +6,7 @@ const Favn3kon = {
 	id   : 'n3kon3kt',
 	apply: false,
 	
-	pixelData  : null,
+	pixelData  : [],
 	brightness : -0,
 	colorAjusts: [],
 	
@@ -22,7 +22,7 @@ const Favn3kon = {
 	},
 	initMe: function({ apply, pixelData, brightness, colorAjusts }) {
 		if (pixelData) {
-			let changes;
+			let changes, imgData = imgDataCpy(pixelData);
 			
 			if ((changes = Boolean (brightness)))
 				overlay.querySelector('.brithnes > .block').style.left = `${ (this.brightness = brightness) + 50 }%`;
@@ -30,12 +30,12 @@ const Favn3kon = {
 			if ((changes = Boolean (colorAjusts.length)))
 				overlay.querySelectorAll(`[itemprop="${ Object.assign(this.colorAjusts, colorAjusts).join('"],[itemprop="') }"]`).forEach(fi => fi.classList.add('ch-x-k'));
 			
-			this.pixelData = Uint8ClampedArray.from(pixelData);
+			Object.assign(this.pixelData, pixelData);
 			
 			if (changes) {
-				this.applyFilters();
+				this.applyFilters(imgData);
 			} else
-				contxt.putImageData(new ImageData (this.pixelData, Q_HEIGHT, Q_HEIGHT), 0, 0);
+				contxt.putImageData(imgData, 0, 0);
 			
 			if (apply) {
 				link.href  = canvas.toDataURL();
@@ -45,16 +45,14 @@ const Favn3kon = {
 		}
 		document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', onReady) : onReady();
 	},
-	applyFilters: function() {
+	applyFilters: function(imgData) {
 		
-		const pixels = Uint8ClampedArray.from(this.pixelData);
-		
-		ColorFilter['expose'](pixels, this.brightness);
+		ColorFilter['expose'](imgData.data, this.brightness);
 		
 		for (let name of this.colorAjusts)
-			ColorFilter[name](pixels);
+			ColorFilter[name](imgData.data);
 		
-		contxt.putImageData(new ImageData (pixels, Q_HEIGHT,  Q_HEIGHT), 0, 0);
+		contxt.putImageData(imgData, 0, 0);
 	},
 	handleEvent: function({ target }) {
 		switch (target.id) {
@@ -64,13 +62,13 @@ const Favn3kon = {
 			case 'nk3__dropDownArrow':
 				target.firstElementChild.click();
 				break;
-			case 'nk3__faviconDefault':
+			case 'nk3__faviconDefault': /* target = deffav */
 				this.apply = canvas.classList.toggle('ch-x-k');
-				deffav.classList.add('ch-x-k');
-				link.href = deffav.src;
+				target.classList.add('ch-x-k');
+				link.href = target.src;
 				stFavnekonData();
 				break;
-			case 'nk3__previewIcon':
+			case 'nk3__previewIcon': /* target = canvas */
 				this.apply = target.classList.toggle('ch-x-k');
 				deffav.classList.remove('ch-x-k');
 				stFavnekonData();
@@ -83,7 +81,9 @@ const Favn3kon = {
 					this.colorAjusts.splice(
 						this.colorAjusts.indexOf(name), 1);
 				}
-				this.applyFilters();
+				this.applyFilters(
+					imgDataCpy(this.pixelData)
+				);
 				stFavnekonData();
 		}
 	}
@@ -296,7 +296,7 @@ const pasL = (() => {
 })();
 
 const ColorFilter = {
-	
+	// from Fabric.js Image Filters ( original source code http://fabricjs.com/image-filters )
 	'gray': (data) => {
 		for (let i = 0; i < data.length; i += 4) {
 			data[i + 2] = data[i + 1] = data[i] = (0.21 * data[i] + 0.72 * data[i+1] + 0.07 * data[i+2]);
@@ -339,7 +339,9 @@ const ColorFilter = {
 			data[i + 2] = 255 - data[i+2];
 		}
 	},
-	// Apple-like expose filter ( brightness + contrast [-50 ... 50] )
+	/* Apple-like expose filter ( brightness + contrast [-50 ... 50] )
+	    ---> https://stackoverflow.com/questions/10521978/html5-canvas-image-contrast#18495093
+	*/
 	'expose': (data, ajust) => {
 		var factor = (259 * (ajust + 255)) / (255 * (259 - ajust));
 		for (let i = 0; i < data.length; i += 4) {
@@ -411,7 +413,9 @@ function barChanger(e) {
 			bar.style.left = `${pct}%`;
 			Favn3kon.brightness = pct - 50;
 		}
-		Favn3kon.applyFilters();
+		Favn3kon.applyFilters(
+			imgDataCpy(Favn3kon.pixelData)
+		);
 	};
 	
 	const barEnd = () => {
@@ -485,10 +489,12 @@ function drawFavnekon(X, Y, W, H) {
 			contxt.drawImage(oc, 0, 0, width, height, 0, 0, Q_HEIGHT, Q_HEIGHT);
 		}
 		
-		Favn3kon.pixelData = contxt.getImageData(0, 0, Q_HEIGHT, Q_HEIGHT).data;
+		let imgData = contxt.getImageData(0, 0, Q_HEIGHT, Q_HEIGHT);
+		
+		Object.assign(Favn3kon.pixelData, imgData.data);
 		
 		if ( Favn3kon.brightness || Favn3kon.colorAjusts.length )
-			Favn3kon.applyFilters();
+			Favn3kon.applyFilters(imgData);
 		
 		stFavnekonData();
 	}
@@ -503,10 +509,19 @@ function stFavnekonData() {
 	chrome.runtime.sendMessage({
 		name: 'save:3plz',
 		data: {
-			pixelData: Array.from(pixelData),
-			apply, brightness, colorAjusts
+			pixelData, apply, brightness, colorAjusts
 		}
 	});
+}
+
+function imgDataCpy(pixelArray) {
+	
+	let imgData = contxt.getImageData(0, 0, Q_HEIGHT, Q_HEIGHT);
+	
+	for (let i = 0; i < pixelArray.length; i++)
+		imgData.data[i] = pixelArray[i];
+	
+	return imgData;
 }
 
 function _setup(el, _Attrs, _Events) {
