@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<style>
+			#n3cons_view {
+				margin-left: 4px;
+			}
+			#n3cons_sel {
+				border: 1px dashed #ccc;
+				border-radius: 3px;
+				position: fixed;
+				padding: 16px;
+				background-color: rgba(220,220,220,.3);
+				z-index: 1;
+			}
+			#menu_fill_up {
+				position: fixed;
+				left: 0; top: 0; right: 0; bottom: 0;
+				background-color: #359e1bc9;
+				color: white;
+				z-index: 2;
+			}
+			.centered {
+				position: relative;
+				margin: 35% auto;
+				text-align: center;
+				display: table;
+			}
+			.txt-btn {
+				padding: 10px 5px;
+				margin: 0 5px;
+				cursor: pointer;
+			}
+			.txt-btn:hover {
+				background-color: rgba(99,99,99,.2);
+			}
+			.info-line {
+				line-height: 2.4em;
+				color: #b60ca8;
+				cursor: default;
+			}
+			.hide, .m-clip > *:not(.info-line) {
+				display: none !important;
+			}
+			.m-clip > .info-line {
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+				border: 1px dashed whitesmoke;
+				margin: 5% auto;
+				max-width: 200px;
+			}
+			.m-clip:after {
+				content: attr(_MSG_);
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="n3cons_view"></canvas>
+		<div id="n3cons_sel" style="left: -100px; top: -100px;"></div>
+		<div id="menu_fill_up" hidden>
+			<span class="centered">
+				<div id="apply_4_tab" class="txt-btn"></div>
+				<div id="save_to_pc" class="txt-btn"></div>
+				<div id="copy_to_clip" class="txt-btn"></div>
+				<div id="remove_from_db" class="txt-btn"></div>
+			</span>
+			<span class="centered hide">
+				<div class="info-line"></div>
+				<span class="txt-btn"></span>
+				<span class="txt-btn"></span>
+			</span>
+		</div>
+		<script type="text/javascript" src="popup_db.js"></script>
+	</body>
+</html>

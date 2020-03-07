@@ -10,5 +10,11 @@
 	"menuImageContxt": {
 		"description": "Image context menu title.",
 		"message": "Make favicon from this image"
-	}
+	},
+	"dbApply" : { "message": "Apply"  },
+	"dbSave"  : { "message": "Save"   },
+	"dbCopy"  : { "message": "Copy"   },
+	"dbRemove": { "message": "Remove" },
+	"dbYes"   : { "message": "Yes"    },
+	"dbNo"    : { "message": "No"     }
 }

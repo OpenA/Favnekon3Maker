@@ -10,5 +10,11 @@
 	"menuImageContxt": {
 		"description": "Image context menu title.",
 		"message": "Сделать фавикон из этого изображения"
-	}
+	},
+	"dbApply" : { "message": "Применить" },
+	"dbSave"  : { "message": "Сохранить" },
+	"dbCopy"  : { "message": "Копировать"},
+	"dbRemove": { "message": "Удалить"   },
+	"dbYes"   : { "message": "Да"        },
+	"dbNo"    : { "message": "Нет"       }
 }
