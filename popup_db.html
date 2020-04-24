@@ -6,6 +6,9 @@
 			#n3cons_view {
 				margin-left: 4px;
 			}
+			#n3cons_pages {
+				text-align: center;
+			}
 			#n3cons_sel {
 				border: 1px dashed #ccc;
 				border-radius: 3px;
@@ -23,9 +26,25 @@
 			}
 			.centered {
 				position: relative;
-				margin: 35% auto;
+				margin: 30% auto;
 				text-align: center;
 				display: table;
+			}
+			.nav-btn {
+				color: rgb(29, 84, 167);
+				border: 1px dotted rgb(29, 84, 167);
+				padding: 0 5px;
+				margin-right: 3px;
+				cursor: pointer;
+			}
+			.nav-btn.curr {
+				color: inherit !important;
+				border-color: transparent !important;
+				cursor: default;
+			}
+			.nav-btn:hover {
+				color: rgb(82, 140, 228);
+				border-color: rgb(82, 140, 228);
 			}
 			.txt-btn {
 				padding: 10px 5px;
@@ -37,10 +56,10 @@
 			}
 			.info-line {
 				line-height: 2.4em;
-				color: #b60ca8;
+				color: #ffe600;
 				cursor: default;
 			}
-			.hide, .m-clip > *:not(.info-line) {
+			.hide, .m-clip > *:not(.info-line), [hidden] {
 				display: none !important;
 			}
 			.m-clip > .info-line {
@@ -48,8 +67,8 @@
 				white-space: nowrap;
 				overflow: hidden;
 				border: 1px dashed whitesmoke;
-				margin: 5% auto;
-				max-width: 200px;
+				margin: 10px auto;
+				max-width: 175px;
 			}
 			.m-clip:after {
 				content: attr(_MSG_);
@@ -59,6 +78,7 @@
 	<body>
 		<canvas id="n3cons_view"></canvas>
 		<div id="n3cons_sel" style="left: -100px; top: -100px;"></div>
+		<div id="n3cons_pages"></div>
 		<div id="menu_fill_up" hidden>
 			<span class="centered">
 				<div id="apply_4_tab" class="txt-btn"></div>

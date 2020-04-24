@@ -36,6 +36,8 @@
 	right: 0;
 	padding: 2px 9px 5px;
 	border-radius: 0 5px;
+	color: #555;
+	font-size: 12px;
 }
 #nk3__overlayCloseBtn:before {
 	content: "x";
