@@ -11,6 +11,9 @@
 		"description": "Image context menu title.",
 		"message": "Make favicon from this image"
 	},
+	"dbCopyTextMSG": {
+		"message": "click on block and use context menu for copy"
+	},
 	"dbApply" : { "message": "Apply"  },
 	"dbSave"  : { "message": "Save"   },
 	"dbCopy"  : { "message": "Copy"   },

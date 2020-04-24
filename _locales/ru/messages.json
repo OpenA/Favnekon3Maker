@@ -11,6 +11,9 @@
 		"description": "Image context menu title.",
 		"message": "Сделать фавикон из этого изображения"
 	},
+	"dbCopyTextMSG": {
+		"message": "Кликните на блок и скопируйте из контекстного меню"
+	},
 	"dbApply" : { "message": "Применить" },
 	"dbSave"  : { "message": "Сохранить" },
 	"dbCopy"  : { "message": "Копировать"},

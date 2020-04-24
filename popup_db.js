@@ -98,7 +98,7 @@ runtime.getBackgroundPage(({ kon3ktDB, sendDataTo }) => {
 				first.classList.add('hide');
 				last.className = 'centered m-clip';
 				last.children[0].textContent = getDataUrl();
-				last.setAttribute('_MSG_', 'click text and use copy from context menu');
+				last.setAttribute('_MSG_', i18n.getMessage('dbCopyTextMSG'));
 				last.onclick = e => {
 					e.stopPropagation();
 					e.preventDefault();
