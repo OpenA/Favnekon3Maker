@@ -3,7 +3,7 @@ const dataSaved = {};
 const tComplete = {};
 
 if (typeof browser === 'undefined') {
-	var browser  = chrome;
+	var browser = chrome;
 }
 
 const DB_N3 = true ? 'n3kFF' : `
