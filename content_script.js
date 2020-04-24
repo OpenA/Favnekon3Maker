@@ -73,20 +73,13 @@ const Favn3kon = {
 				break;
 			case 'nk3__addFilter':
 				let name = target.getAttribute('itemprop');
-				let ctx  = canvas.getContext('2d');
 				if (target.classList.toggle('ch-x-k')) {
-					var pixels = ctx.getImageData(0, 0, Q_HEIGHT, Q_HEIGHT);
 					this.colorAjusts.push(name);
-					ColorFilter[name](pixels.data);
 				} else {
-					var pixels = imgDataCpy(ctx, this.pixelData);
-					const ajusts = this.colorAjusts;
-					ajusts.splice(ajusts.indexOf(name), 1);
-					ColorFilter.expose(pixels.data, this.brightness);
-					for (const fi of ajusts)
-						ColorFilter[fi](pixels.data);
+					this.colorAjusts.splice(
+						this.colorAjusts.indexOf(name), 1);
 				}
-				ctx.putImageData(pixels, 0, 0);
+				applyFilters();
 				stFavnekonData();
 		}
 	}
@@ -394,30 +387,23 @@ function barChanger(e) {
 
 	const { style } = this.firstElementChild;
 	const { left, width } = this.getBoundingClientRect();
-	const ctx = canvas.getContext('2d'),
-	   u8mask = imgDataCpy(ctx, Favn3kon.pixelData).data;
-
-	for (const name of Favn3kon.colorAjusts)
-		 ColorFilter[name](u8mask);
 
 	const barMove = ({ clientX }) => {
-		let pct = Math.round((clientX - left) / width * 100),
-			bright = 0, pixels = imgDataCpy(ctx, u8mask);
+		let pct = Math.round((clientX - left) / width * 100);
 		if (pct > 100) {
 			style.left = '100%';
-			bright = 50;
+			Favn3kon.brightness = 50;
 		} else if (pct < 0) {
 			style.left = '0';
-			bright = -50;
+			Favn3kon.brightness = -50;
 		} else if (pct > 48 && pct < 51) {
 			style.left = '50%';
-			bright = 0;
+			Favn3kon.brightness = 0;
 		} else {
 			style.left = `${pct}%`;
-			bright = pct - 50;
+			Favn3kon.brightness = pct - 50;
 		}
-		ColorFilter.expose(pixels.data, (Favn3kon.brightness = bright));
-		ctx.putImageData(pixels, 0, 0);
+		applyFilters();
 	};
 	
 	const barEnd = () => {
@@ -514,6 +500,18 @@ function drawFavnekon(X, Y, W, H) {
 	} catch (err) {
 		console.info(err)
 	}
+}
+
+function applyFilters() {
+	const ctx = canvas.getContext('2d'),
+	   pixels = imgDataCpy(ctx, Favn3kon.pixelData);
+
+	ColorFilter.expose(pixels.data, Favn3kon.brightness);
+
+	for (const name of Favn3kon.colorAjusts)
+		ColorFilter[name](pixels.data);
+
+	ctx.putImageData(pixels, 0, 0);
 }
 
 function stFavnekonData() {

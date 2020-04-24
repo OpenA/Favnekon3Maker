@@ -19,7 +19,7 @@ n3consView.height = calcBounds(MAX_ROWS); // rows
 let _X = -1, _Y = -1, _N = 0, PAGES = [];
 
 n3conSel.addEventListener('mousedown', e => {
-	if (e.button === 0 && PAGES[_N].length > getCellNum(_X,_Y)) {
+	if (e.button === 0 && PAGES[_N] && PAGES[_N].length > getCellNum(_X,_Y)) {
 		e.preventDefault();
 		menufillUp.hidden = false;
 	}

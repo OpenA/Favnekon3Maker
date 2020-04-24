@@ -6,7 +6,7 @@ if (typeof browser === 'undefined') {
 	var browser  = chrome;
 }
 
-const DB_N3 = false ? 'n3kFF' : `
+const DB_N3 = true ? 'n3kFF' : `
  |\-/\..--.
   _ _   ,  ;
  = ^ =_|../`;
@@ -18,8 +18,8 @@ const dbStor3 = {
 		const st = Object.assign({ id }, data);
 		var hash = 0, pixelData = Uint8ClampedArray.from(data.pixelData);
 
-		for (let byte of pixelData) {
-			hash += byte;
+		for (let i = 0; i < pixelData.length; i++) {
+			hash += pixelData[i] + i;
 		}
 		st.pixelData = hash;
 
