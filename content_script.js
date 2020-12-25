@@ -2,37 +2,61 @@
 const Q_HEIGHT = 32;
 
 const Favn3kon = {
-	
-	id   : 'n3kon3kt',
+
+	hash : 0,
 	apply: false,
-	
+
 	pixelData  : [],
 	brightness : -0,
 	colorAjusts: [],
-	
-	pushKat: function(src) {
+
+	pushKat: (src = '') => {
 		imageReset();
 		if (src) {
-			if (/^data\:image\/[^\s]+/.test(src)) {
-				fetch(src).then(res => res.blob()).then(blob => {
-					image.src = URL.createObjectURL(blob);
-				});
-			} else
-				image.src = src;
-			drop.prepend( pasL.box, image );
+			fetch(src).then(res => res.blob()).then(blob => {
+				image.src = URL.createObjectURL(blob);
+			});
+			drop.prepend( sarea.box, image );
 			canvas.style = '';
 		}
 		document.body.appendChild(overlay);
 	},
-	initMe: function({ apply, pixelData, brightness, colorAjusts }) {
+
+	put3kon: (apply = false) => {
+
+		const favicons = document.head.querySelectorAll(`link[rel$="icon"]:not(#${link.id}), link[rel="icon"]:not(#${link.id})`);
+		const manifest = document.head.querySelector('link[rel="manifest"]');
+		const metaimg  = document.head.querySelector('meta[itemprop="image"]');
+
+		let default_img = '';
+
+		if (favicons.length) {
+			default_img = favicons[0].href;
+			for(const ico of favicons)
+				ico.remove();
+		}
+		if (metaimg) {
+			if(!default_img)
+				default_img = metaimg.content;
+			metaimg.remove();
+		}
+		if (manifest) {
+			if(!default_img)
+				default_img = manifest.href;
+			manifest.remove();
+		}
+		if (default_img) {
+			deffav.src = default_img;
+		}
+		link.href = apply ? canvas.toDataURL() : deffav.src;
+		document.head.append(link);
+	},
+
+	initMe: function({ apply, pixelData, brightness, colorAjusts, hash }) {
 		if (pixelData) {
 			const contxt = canvas.getContext('2d'),
-			      pixels = imgDataCpy(contxt, pixelData);
-			
-			if (Boolean(brightness)) {
-				overlay.querySelector('.brithnes > .block').style.left = `${ (this.brightness = brightness) + 50 }%`;
-				ColorFilter.expose(pixels.data, brightness);
-			}
+				  pixels = imgDataCpy(contxt, pixelData);
+
 			if (Boolean(colorAjusts.length)) {
 				const filters = overlay.querySelectorAll(`[itemprop="${ colorAjusts.join('"],[itemprop="') }"]`);
 				for (let i = 0; i < colorAjusts.length; i++) {
@@ -40,17 +64,20 @@ const Favn3kon = {
 					filters[i].classList.add('ch-x-k');
 				}
 			}
-
+			if (Boolean(brightness)) {
+				overlay.querySelector('.brithnes > .block').style.left = `${ (this.brightness = brightness) + 50 }%`;
+				ColorFilter.expose(pixels.data, brightness);
+			}
+			this.hash = hash;
 			Object.assign(this.pixelData, pixelData);
 			contxt.putImageData(pixels, 0, 0);
-			
-			if (apply) {
-				link.href  = canvas.toDataURL();
-				this.apply = canvas.classList.toggle('ch-x-k');
+
+			if((this.apply = apply)) {
 				deffav.classList.remove('ch-x-k');
+				canvas.classList.add('ch-x-k');
 			}
 		}
-		document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', onReady) : onReady();
+		this.put3kon(apply);
 	},
 	handleEvent: function({ target }) {
 		switch (target.id) {
@@ -61,15 +88,18 @@ const Favn3kon = {
 				target.firstElementChild.click();
 				break;
 			case 'nk3__faviconDefault': /* target = deffav */
-				this.apply = canvas.classList.toggle('ch-x-k');
+				this.apply = false;
+				canvas.classList.remove('ch-x-k');
 				target.classList.add('ch-x-k');
 				link.href = target.src;
-				stFavnekonData();
+				storeData();
 				break;
 			case 'nk3__previewIcon': /* target = canvas */
-				this.apply = target.classList.toggle('ch-x-k');
+				this.apply = true;
+				target.classList.add('ch-x-k');
 				deffav.classList.remove('ch-x-k');
-				stFavnekonData();
+				link.href = target.toDataURL();
+				storeData();
 				break;
 			case 'nk3__addFilter':
 				let name = target.getAttribute('itemprop');
@@ -80,7 +110,7 @@ const Favn3kon = {
 						this.colorAjusts.indexOf(name), 1);
 				}
 				applyFilters();
-				stFavnekonData();
+				storeData();
 		}
 	}
 };
@@ -115,8 +145,10 @@ const overlay = _setup('div' , { id: 'nk3__shadowBoxOverlay', html: `
 
 const canvas = overlay.querySelector('#nk3__previewIcon'),
       deffav = overlay.querySelector('#nk3__faviconDefault'),
+      sarea  = new pasL({ lock: true, autoadd: false, edgies: false }),
       drop   = _setup(overlay.querySelector('droparea'), null, { dragover: e => { e.preventDefault() }, drop: fileUpload });
 
+sarea.addListener('MoveEnd', drawFavnekon);
 drop.children['nk3__dropDownArrow'].addEventListener('change', fileUpload);
 overlay.querySelector('.brithnes').addEventListener('mousedown', barChanger);
 overlay
@@ -137,163 +169,7 @@ overlay
 	});
 
 chrome.runtime.onMessage.addListener(({ action, data }) => { Favn3kon[action](data) });
-chrome.runtime.sendMessage({ name: Favn3kon.id });
-
-const pasL = (() => {
-	
-	const box = _setup('div', { id: 'pasL_box', style: 'position: absolute;' }),
-	   shift  = { ptp: '', sX: 0, sY: 0, eX: 0, eY: 0 },
-	   coords = { x1: 0, y1: 0, w: 0, h: 0, x2: 0, y2: 0 },
-	   events = { mousemove: areaMovement, mouseup: () => { _setup(window, null, { remove: events }); drawImage(); }},
-	   behind = {
-		top   : _setup('div', { id: 'pasl_behind_top'   , class: 'pasl-row-sect pasl-dark' }),
-		right : _setup('div', { id: 'pasl_behind_right' , class: 'pasl-col-sect pasl-dark' }),
-		left  : _setup('div', { id: 'pasl_behind_left'  , class: 'pasl-col-sect pasl-dark' }),
-		bottom: _setup('div', { id: 'pasl_behind_bottom', class: 'pasl-row-sect pasl-dark' }),
-		select: _setup('div', { id: 'pasl_behind_select', class: 'pasl-selection-area' }),
-		center: _setup('div', { /* pasl_behind_center */  class: 'pasl-col-sect' })
-	};
-	
-	box.append(
-		behind['left'],
-		behind['center'],
-		behind['right']
-	);
-	behind['center'].append(
-		behind['top'],
-		behind['select'],
-		behind['bottom']
-	);
-	
-	behind['select'].insertAdjacentHTML('afterbegin', (
-		'<div class="pasl-rcons" id="rcon_t-l"></div>'+
-		'<div class="pasl-rcons" id="rcon_t-r"></div>'+
-		'<div class="pasl-rcons" id="rcon_b-l"></div>'+
-		'<div class="pasl-rcons" id="rcon_b-r"></div>'));
-	
-	behind['select'].addEventListener('mousedown', (e) => {
-		e.preventDefault();
-		shift.sX = e.clientX;
-		shift.sY = e.clientY;
-		if (e.target.classList[0] === 'pasl-rcons') {
-			shift.ptp = e.target.id.split('_')[1];
-			shift.eX = coords.w;
-			shift.eY = coords.h;
-		} else {
-			shift.ptp = 'm-v';
-			shift.eX = coords.x1;
-			shift.eY = coords.y1;
-		}
-		_setup(window, null, events);
-	});
-	
-	const SelectArea = {
-		get 'x' ( ) { return coords.x1 },
-		set 'x' (n) {
-				coords.x1 = n > 0 ? n : 0;
-				if (coords.x1 + coords.w > coords.size[0]) {
-					coords.x1 = coords.size[0] - coords.w;
-				}
-				coords.x2 = coords.size[0] - coords.x1 - coords.w;
-				behind.left.style['width'] = coords.x1 +'px';
-				behind.right.style['width'] = coords.x2 +'px';
-			},
-		get 'y' ( ) { return coords.y1 },
-		set 'y' (n) {
-				coords.y1 = n > 0 ? n : 0;
-				if (coords.y1 + coords.h > coords.size[1]) {
-					coords.y1 = coords.size[1] - coords.h;
-				}
-				coords.y2 = coords.size[1] - coords.y1 - coords.h;
-				behind.top.style['height'] = coords.y1 +'px';
-				behind.bottom.style['height'] = coords.y2 +'px';
-			},
-		get 'w' ( ) { return coords.w },
-		set 'w' (n) {
-				behind.select.style['width'] = (coords.w  = coords.size[0] > n + coords.x1 ? (n > 0 ? n : 0) : coords.size[0] - coords.x1) +'px';
-				behind.right.style['width']  = (coords.x2 = coords.size[0] - coords.x1 - coords.w) +'px';
-			},
-		get 'h' ( ) { return coords.h },
-		set 'h' (n) {
-				coords.h  = coords.size[1] > n + coords.y1 ? (n > 0 ? n : 0) : coords.size[1] - coords.y1;
-				coords.y2 = coords.size[1] - coords.y1 - coords.h;
-				behind.select.style['height'] = coords.h  +'px';
-				behind.bottom.style['height'] = coords.y2 +'px';
-			},
-		get 'rw'( ) { return coords.w },
-		set 'rw'(n) {
-				coords.w  = coords.size[0] > n + coords.x2 ? (n > 0 ? n : 0) : coords.size[0] - coords.x2;
-				coords.x1 = coords.size[0] - coords.x2 - coords.w;
-				behind.select.style['width'] = coords.w +'px';
-				behind.left.style['width']  = coords.x1 +'px';
-			},
-		get 'rh'( ) { return coords.h },
-		set 'rh'(n) {
-				coords.h  = coords.size[1] > n + coords.y2 ? (n > 0 ? n : 0) : coords.size[1] - coords.y2;
-				coords.y1 = coords.size[1] - coords.y2 - coords.h;
-				behind.select.style['height'] = coords.h +'px';
-				behind.top.style['height']   = coords.y1 +'px';
-			}
-	}
-	
-	function areaMovement(e) {
-		var rx, x = e.clientX - shift.sX + shift.eX,
-			ry, y = e.clientY - shift.sY + shift.eY;
-		switch (shift.ptp) {
-			case 'm-v':
-				SelectArea.x = x;
-				SelectArea.y = y;
-				break;
-			case 't-l':
-				rx = shift.sX - e.clientX + shift.eX;
-				ry = shift.sY - e.clientY + shift.eY;
-				SelectArea.rw = SelectArea.lock && ry > rx ? ry : rx;
-				SelectArea.rh = SelectArea.lock && rx > ry ? rx : ry;
-				break;
-			case 't-r':
-				ry = shift.sY - e.clientY + shift.eY;
-				SelectArea.w  = SelectArea.lock && ry > x ? ry : x;
-				SelectArea.rh = SelectArea.lock && x > ry ? x : ry;
-				break;
-			case 'b-l':
-				rx = shift.sX - e.clientX + shift.eX;
-				SelectArea.rw = SelectArea.lock && y > rx ? y : rx;
-				SelectArea.h  = SelectArea.lock && rx > y ? rx : y;
-				break;
-			case 'b-r':
-				SelectArea.w = SelectArea.lock && y > x ? y : x;
-				SelectArea.h = SelectArea.lock && x > y ? x : y;
-		}
-		e.preventDefault();
-	}
-	function areaSelect(img, points) {
-		box.style['width' ] = img.width  +'px';
-		box.style['height'] = img.height +'px';
-		coords.size  = [img.width, img.height];
-		coords.ratio = [img.naturalWidth / img.width, img.naturalHeight / img.height];
-		coords.x1 = points.x || 0;
-		coords.y1 = points.y || 0;
-		coords.w  = points.w || Q_HEIGHT;
-		coords.h  = points.h || Q_HEIGHT;
-		for (var vec in points) {
-			SelectArea[vec] = points[vec];
-		}
-		drawImage();
-	}
-	function drawImage() {
-		drawFavnekon(
-			Math.floor(coords.x1 * coords.ratio[0]),
-			Math.floor(coords.y1 * coords.ratio[1]),
-			Math.floor(coords.w  * coords.ratio[0]),
-			Math.floor(coords.h  * coords.ratio[1])
-		);
-	}
-	return {
-		box: box,
-		draw: drawImage,
-		select: areaSelect
-	}
-})();
+chrome.runtime.sendMessage({ name: 'n3kon3kt' });
 
 const ColorFilter = {
 	// from Fabric.js Image Filters ( original source code http://fabricjs.com/image-filters )
@@ -352,27 +228,6 @@ const ColorFilter = {
 	}
 }
 
-function onReady() {
-	
-	document.removeEventListener('DOMContentLoaded', onReady);
-	
-	const head = document.getElementsByTagName('head')[0];
-	var favico = head.querySelectorAll('link[rel$="icon"], link[rel="icon"]');
-	
-	if (favico.length) {
-		
-		deffav.src = Favn3kon.apply ? favico[0].href : (link.href = favico[0].href);
-		
-		for (var i = 0; i < favico.length; i++) {
-			head.removeChild(favico[i]);
-		}
-	} else if ((favico = head.querySelector('meta[itemprop="image"]'))) {
-		
-		deffav.src = Favn3kon.apply ? favico.content : (link.href = favico.content);
-	}
-	head.appendChild(link);
-}
-
 function RGB_transform(m, data) {
 	for (var i = 0; i < data.length; i += 4) {
 		let r = data[i], g = data[i + 1], b = data[i + 2];
@@ -407,12 +262,11 @@ function barChanger(e) {
 	};
 	
 	const barEnd = () => {
-		stFavnekonData();
+		storeData();
 		style['background-color'] = 'inherit';
 		window.removeEventListener('mousemove', barMove, false);
 		window.removeEventListener('mouseup', barEnd, false);
 	}
-	
 	style['background-color'] = 'green';
 	barMove(e);
 	
@@ -421,28 +275,24 @@ function barChanger(e) {
 }
 
 function imageLoad(e) {
-	
-	var eObj = {
-		lock: true,
-		x: 0, w: this.width,
-		y: 0, h: this.height
+
+	let start_x = 0, sel_w = e.target.width;
+	let start_y = 0, sel_h = e.target.height;
+
+	if (sel_w > sel_h) {
+		start_x = (e.target.width - e.target.height) / 2;
+		  sel_w =  e.target.height;
+	} else if (sel_w < sel_h) {
+		start_y = (e.target.height - e.target.width) / 2;
+		  sel_h =  e.target.width;
 	}
-	
-	if (this.width > this.height) {
-		eObj.w = this.height;
-		eObj.x = (this.width - this.height) / 2;
-	} else
-		if (this.width < this.height) {
-			eObj.h = this.width;
-			eObj.y = (this.height - this.width) / 2;
-		}
-	
-	pasL.select(this, eObj);
+	sarea.selectZone(e.target, start_x, start_y, sel_w, sel_h);
+	drawFavnekon(false);
 }
 
 function imageReset() {
 	image.remove();
-	pasL.box.remove();
+	sarea.box.remove();
 	if (/^blob\:/.test(image.src))
 		URL.revokeObjectURL(image.src);
 }
@@ -456,9 +306,10 @@ function fileUpload(e) {
 	}
 }
 
-function drawFavnekon(X, Y, W, H) {
+function drawFavnekon(update = true) {
 
 	try {
+		const [X, Y, W, H] = sarea.getCoords();
 		const ctx = canvas.getContext('2d');
 		ctx.clearRect(0, 0, Q_HEIGHT, Q_HEIGHT);
 
@@ -480,23 +331,21 @@ function drawFavnekon(X, Y, W, H) {
 			}
 			ctx.drawImage(oc, 0, 0, width, height, 0, 0, Q_HEIGHT, Q_HEIGHT);
 		}
-		
 		const imgData = ctx.getImageData(0, 0, Q_HEIGHT, Q_HEIGHT);
-		let changes = false;
-		
-		Object.assign(Favn3kon.pixelData, imgData.data);
-		
-		if ((changes = Boolean(Favn3kon.brightness)))
-			ColorFilter.expose(imgData.data, Favn3kon.brightness);
+		let hash = 0, changes = Favn3kon.brightness | Favn3kon.colorAjusts.length;
 
-		for (const name of Favn3kon.colorAjusts) {
-			ColorFilter[name](imgData.data);
-			changes = true;
+		for (let i = 0; i < imgData.data.length; i++) {
+			hash += (Favn3kon.pixelData[i] = imgData.data[i]) + i;
 		}
 		if ( changes ) {
+			for (const name of Favn3kon.colorAjusts)
+				ColorFilter[name](imgData.data);
+			if (Boolean(Favn3kon.brightness))
+				ColorFilter.expose(imgData.data, Favn3kon.brightness);
 			ctx.putImageData(imgData, 0, 0);
 		}
-		stFavnekonData();
+		Favn3kon.hash = hash;
+		storeData(update);
 	} catch (err) {
 		console.info(err)
 	}
@@ -506,24 +355,23 @@ function applyFilters() {
 	const ctx = canvas.getContext('2d'),
 	   pixels = imgDataCpy(ctx, Favn3kon.pixelData);
 
-	ColorFilter.expose(pixels.data, Favn3kon.brightness);
-
 	for (const name of Favn3kon.colorAjusts)
 		ColorFilter[name](pixels.data);
 
+	ColorFilter.expose(pixels.data, Favn3kon.brightness);
 	ctx.putImageData(pixels, 0, 0);
 }
 
-function stFavnekonData() {
-	const { apply, pixelData, brightness, colorAjusts } = Favn3kon;
+function storeData(update = false) {
+	const { apply, hash, pixelData, brightness, colorAjusts } = Favn3kon;
 	
 	if (apply)
 		link.href = canvas.toDataURL();
 	
 	chrome.runtime.sendMessage({
-		name: 'save:3plz',
+		name: (update ? 'upd:3plz' : 'save:3plz'),
 		data: {
-			pixelData, apply, brightness, colorAjusts
+			apply, hash, pixelData, brightness, colorAjusts
 		}
 	});
 }
@@ -536,41 +384,6 @@ function imgDataCpy(contxt, pixelArray) {
 		imgData.data[i] = pixelArray[i];
 	
 	return imgData;
-}
-
-function _setup(el, _Attrs, _Events) {
-	if (el) {
-		if (typeof el === 'string') {
-			el = document.createElement(el);
-		}
-		if (_Attrs) {
-			for (var key in _Attrs) {
-				_Attrs[key] === undefined ? el.removeAttribute(key) :
-				key === 'html' ? el.innerHTML   = _Attrs[key] :
-				key === 'text' ? el.textContent = _Attrs[key] :
-				key in el    && (el[key]        = _Attrs[key] ) == _Attrs[key]
-				             &&  el[key]       == _Attrs[key] || el.setAttribute(key, _Attrs[key]);
-			}
-		}
-		if (_Events) {
-			if ('remove' in _Events) {
-				for (var type in _Events['remove']) {
-					if (_Events['remove'][type].forEach) {
-						_Events['remove'][type].forEach(function(fn) {
-							el.removeEventListener(type, fn, false);
-						});
-					} else {
-						el.removeEventListener(type, _Events['remove'][type], false);
-					}
-				}
-				delete _Events['remove'];
-			}
-			for (var type in _Events) {
-				el.addEventListener(type, _Events[type], false);
-			}
-		}
-	}
-	return el;
 }
 
 if (!('width' in DOMRect.prototype)){

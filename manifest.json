@@ -2,15 +2,11 @@
 	"manifest_version": 2,
 	"name": "Favnekon3 Maker",
 	"description": "__MSG_appDesc__",
-	"version": "2.6",
+	"version": "3.0",
 	"default_locale": "en_US",
 	"background": {
+		"persistent": false,
 		"scripts": ["background.js"]
-	},
-	"browser_specific_settings": {
-	  "gecko": {
-		"id": "OpenA@Favnekon3.git"
-	  }
 	},
 	"browser_action": {
 	  "default_icon": "^з^.png",
