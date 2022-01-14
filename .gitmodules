@@ -1,3 +1,3 @@
-[submodule "pasL"]
-	path = pasL
-	url = https://github.com/OpenA/pasL
+[submodule "tools/pasL"]
+	path = tools/pasL
+	url = https://github.com/OpenA/pasL.git
