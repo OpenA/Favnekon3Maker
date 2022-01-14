@@ -1,0 +1,82 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Simpl3 Drawwing Tool</title>
+		<link rel="icon" href="../^з^.png" type="image/png">
+		<link rel="stylesheet" type="text/css" href="css/draww.css" async>
+		<link rel="stylesheet" type="text/css" href="css/draww_fonts.css" async>
+		<link rel="stylesheet" type="text/css" href="../pasL/pasL.css" async>
+		<script type="application/javascript" src="../pasL/pasL.js"></script>
+		<script type="application/javascript" src="js/draww.js"></script>
+	</head>
+	<body>
+		<div id="settings_panel">
+			<div class="out-preview p-sect">
+				<canvas id="preview_canvas"></canvas>
+				<label id="out_nothing" class="out-btn">
+					<ul class="dropdown-list">
+						<li class="dropdown-item" out-type="jpeg"></li>
+						<li class="dropdown-item" out-type="png"></li>
+						<li class="dropdown-item" out-type="webp"></li>
+					</ul>
+				</label>
+			</div>
+			<form id="global_params">
+				<div class="set-line opts">
+					<div style="display: table-cell">
+						<span id="Demotivator"></span>
+					</div>
+					<div style="display: table-cell">
+						<span id="Macro"></span>
+					</div>
+				</div>
+				<div class="set-line opts">
+					<input type="color" id="font_color">
+					<span class="fnt-inp-group">
+					<input type="checkbox" id="font_bold" hidden>
+					<label for="font_bold"></label>
+					<input type="checkbox" id="font_italic" hidden>
+					<label for="font_italic"></label>
+					<label for="font_family">
+						<input type="text" id="font_family" value="Sans">
+						<ul class="dropdown-list">
+							<li class="dropdown-item fnt-fam" style="font-family: 'Agora Slab Pro'">Agora Slab Pro</li>
+							<li class="dropdown-item fnt-fam" style="font-family: Akademitscheskaya">Akademitscheskaya</li>
+							<li class="dropdown-item fnt-fam" style="font-family: Arial">Arial</li>
+							<li class="dropdown-item fnt-fam" style="font-family: 'Beau Sans Pro'">Beau Sans Pro</li>
+							<li class="dropdown-item fnt-fam" style="font-family: 'Gotham Narrow'">Gotham Narrow</li>
+							<li class="dropdown-item fnt-fam" style="font-family: Gunplay">Gunplay</li>
+							<li class="dropdown-item fnt-fam" style="font-family: Impact">Impact</li>
+							<li class="dropdown-item fnt-fam" style="font-family: Ponter">Ponter</li>
+							<li class="dropdown-item fnt-fam" style="font-family: Tahoma">Tahoma</li>
+							<li class="dropdown-item fnt-fam" style="font-family: Verdana">Verdana</li>
+						</ul>
+					</label>
+					</span>
+				</div>
+				<div class="set-line size-ruler" value="0" label="font">
+					<span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span>
+					<span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span>
+					<span class="I"></span><span class="slider" style="left: 0;"></span>
+					<!-- input type="range" name="font_size_value" step="2" min="8" max="120" style="width: 99%;" -->
+				</div>
+				<div class="set-line opts">
+					<input type="color" id="stroke_color">
+					<div class="size-ruler" value="0" label="stroke" style="display: inline-block;">
+						<span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span>
+						<span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span>
+						<span class="slider" style="left: 0;"></span>
+					</div>
+				</div>
+				<input id="file_upload" type="file" hidden/>
+			</form>
+		</div>
+		<div id="editable_zone">
+			<div class="img-area">
+				<img id="work_img">
+				<div id="work_layer"></div>
+				<div class="file-area"></div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,80 @@
+@font-face {
+	font-family: "Akademitscheskaya";
+	src: url(fonts/Akademitscheskaya.ttf);
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: "Ponter";
+	src: url(fonts/Ponter.ttf);
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: "Gunplay";
+	src: url(fonts/Gunplay.ttf);
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: "Agora Slab Pro";
+	src: url(fonts/PFAgoraSlabPro-Medium.ttf);
+}
+@font-face {
+	font-family: "Agora Slab Pro";
+	src: url(fonts/PFAgoraSlabPro-MediumItalic.ttf);
+	font-style: italic;
+}
+@font-face {
+	font-family: "Agora Slab Pro";
+	src: url(fonts/PFAgoraSlabPro-Bold.ttf);
+	font-weight: bold;
+}
+@font-face {
+	font-family: "Agora Slab Pro";
+	src: url(fonts/PFAgoraSlabPro-BoldItalic.ttf);
+	font-weight: bold;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: "Beau Sans Pro";
+	src: url(fonts/PFBeauSansPro-Bbook.ttf);
+}
+@font-face {
+	font-family: "Beau Sans Pro";
+	src: url(fonts/PFBeauSansPro-BbookItalic.ttf);
+	font-style: italic;
+}
+@font-face {
+	font-family: "Beau Sans Pro";
+	src: url(fonts/PFBeauSansPro-Bold.ttf);
+	font-weight: bold;
+}
+@font-face {
+	font-family: "Beau Sans Pro";
+	src: url(fonts/PFBeauSansPro-BoldItalic.ttf);
+	font-weight: bold;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: "Gotham Narrow";
+	src: url(fonts/GothamNarrow-Medium.otf);
+}
+@font-face {
+	font-family: "Gotham Narrow";
+	src: url(fonts/GothamNarrow-MediumItalic.otf);
+	font-style: italic;
+}
+@font-face {
+	font-family: "Gotham Narrow";
+	src: url(fonts/GothamNarrow-Bold.otf);
+	font-weight: bold;
+}
+@font-face {
+	font-family: "Gotham Narrow";
+	src: url(fonts/GothamNarrow-BoldItalic.otf);
+	font-weight: bold;
+	font-style: italic;
+}

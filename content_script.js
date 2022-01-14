@@ -145,7 +145,7 @@ const overlay = _setup('div' , { id: 'nk3__shadowBoxOverlay', html: `
 
 const canvas = overlay.querySelector('#nk3__previewIcon'),
       deffav = overlay.querySelector('#nk3__faviconDefault'),
-      sarea  = new pasL({ lock: true, autoadd: false, edgies: false }),
+      sarea  = new PasL({ lock: true, edgies: false }),
       drop   = _setup(overlay.querySelector('droparea'), null, { dragover: e => { e.preventDefault() }, drop: fileUpload });
 
 sarea.addListener('MoveEnd', drawFavnekon);

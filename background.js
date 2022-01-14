@@ -89,6 +89,7 @@ const _Connects_ = new Map;
 const addContext = () => {
 	browser.contextMenus.create({'title': browser.i18n.getMessage('menuPageContxt'), 'id': 'pagecontext'});
 	browser.contextMenus.create({'title': browser.i18n.getMessage('menuImageContxt'), 'contexts': ['image'], 'id': 'imagecontext'});
+	browser.contextMenus.create({'title': 'draww', 'id': 'drawwcontext'});
 }
 
 // Set up onClick menu item action.
@@ -132,6 +133,11 @@ function onClickHandler({ menuItemId, pageUrl, srcUrl }, tab) {
 	var href = '', needload = false;
 
 	switch (menuItemId) {
+		case 'drawwcontext':
+			browser.tabs.create({
+				url: browser.runtime.getURL('tools/draww.html'), active: true
+			});
+			break;
 		case 'imagecontext':
 			var { protocol, host, href } = new URL(srcUrl);
 			var needload = (

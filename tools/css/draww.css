@@ -1,0 +1,389 @@
+
+body {
+	background: #eee;
+	box-shadow: inset 0 0 60em #777;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	display: flex;
+}
+
+#settings_panel {
+	background: #eee;
+	box-shadow: 2px 0 20px -10px #000;
+	flex: 0 0; z-index: 1;
+}
+#editable_zone {
+	flex: 1 1; z-index: 0;
+}
+
+.p-sect {
+	max-width: 100%;
+	max-height: 100%;
+}
+.out-preview {
+	background-color: black;
+	text-align: center;
+	position: relative;
+	width: 285px;
+	height: 168px;
+}
+
+.out-btn {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	color: white;
+	border-top-left-radius: 5px;
+}
+.out-btn li[out-type]:before {
+	content: attr(out-type);
+	font-variant-caps: small-caps;
+}
+#out_save {
+	padding: 4px 10px;
+	background-color: #089b08;
+}
+#out_apply {
+	padding: 5px 10px 0 10px;
+	background-color: #0089c9;
+}
+#out_save:before {
+	content: "✓";
+}
+#out_apply:before {
+	content: "*";
+}
+.out-btn .dropdown-list {
+	background-color: rgba(0,0,0,.7);
+	border-width: 0;
+	border-radius: 0 0 5px 5px;
+	top: 100%; left: 0;
+}
+
+#preview_canvas {
+	max-width: 100%;
+	max-height: 100%;
+	margin: auto;
+}
+
+
+.img-area, .file-area {
+	margin: 3% auto 0 auto;
+	position: relative;
+	max-width: 90%;
+}
+
+.img-area.i-load + .file-area {
+	display: none;
+}
+
+.file-area {
+	width: 500px;
+	height: 500px;
+	border: 2px dashed gray;
+}
+
+.set-line {
+	margin: 25px 5px;
+}
+
+#work_img {
+	max-width: 100%;
+}
+
+#work_img[src] + .file-area {
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	top: -50px;
+	right: 0;
+}
+#work_img[src] + .file-area:before {
+	content: 'x';
+}
+#work_layer {
+	left: 0; top: 0; right: 0; bottom: 0;
+	position: absolute;
+}
+
+.macro-text {
+	position: absolute;
+	width: 100%;
+	word-wrap: break-word;
+	text-align: center;
+	/*overflow: hidden;
+	font-variant-caps: unicase;*/
+}
+
+.macro-text:focus {
+	cursor: default;
+}
+#bottom-text {
+	bottom: 0;
+}
+#top-text {
+	top: 0;
+}
+
+#rty_mmm {
+	position: fixed;
+	z-index: 9999;
+	height: 0;
+	width: 100%;
+	left: 0;
+	top: 0;
+}
+
+
+.opts > * {
+	vertical-align: middle;
+	margin-left: inherit;
+	max-width: 110px;
+}
+
+.opts > .size-ruler {
+	max-width: 150px;
+}
+
+.sup-align {
+	vertical-align: super;
+	font-size: 14px;
+}
+
+
+/* === ruler elements style === */
+.size-ruler {
+	position: relative;
+	border: 1px solid #bbb;
+	border-bottom-color: #fff;
+	color: #a4a4a4;
+	font: 12px monospace;
+}
+.size-ruler:before {
+	content: attr(label) ":";
+	position: absolute;
+	left: 0;
+}
+.size-ruler:after {
+	content: attr(value) "px";
+	position: absolute;
+	right: 0;
+}
+
+.slider {
+	padding: 9px 4px;
+	position: absolute;
+	box-shadow: 1px 1px 0 #888;
+	top: -10px;
+	background-color: cornflowerblue;
+	z-index: 1;
+}
+
+.I {
+	margin-left: 18px;
+	line-height: 0;
+	position: relative;
+	border: 1px solid #bbb;
+	border-right-color: white;
+}
+.I:after, .I:first-child:before {
+	content: "";
+	position: absolute;
+	top: 3px;
+	left: 9px;
+	padding: 4px 0;
+	border: 1px solid #ccc;
+	border-left-width: 0;
+}
+.I:first-child:before {
+	left: -10px;
+} /* = = = = = = = = */
+
+
+#Demotivator {
+	display: inline-block;
+	border: 5px solid #444;
+	padding: 10px 15px;
+	border-bottom-width: 15px;
+}
+
+#Macro {
+	display: inline-block;
+	border: 1px dotted #444;
+	padding: 16px 18px;
+	position: relative;
+	text-align: center;
+	font-size: 10px;
+	color: #444;
+}
+
+#Macro:before, #Macro:after {
+	display: block;
+	position: absolute;
+	right: 0;
+	left: 0;
+}
+
+#Macro:before {
+	content: "simple";
+	top: 0;
+}
+
+#Macro:after {
+	content: "text";
+	bottom: 0;
+}
+
+#Free {
+	font-size: 20px;
+	background: #eee;
+}
+
+#Free:before {
+	content: "T";
+	border: 1px solid #aaa;
+	padding: 4px 12px;
+	background: linear-gradient(to bottom, #ddd, #fff);
+}
+
+#Free:hover:before {
+	background: linear-gradient(to bottom, #e5e5e5, #fff);
+}
+
+#Free:active:before {
+	background: #cecece;
+}
+
+.set-table {
+	width: 100%;
+	margin: 25px 0;
+}
+
+.set-table-col1 {
+	padding: 10px;
+	text-align: center;
+}
+
+.set-table-col2 {
+	padding: 10px 20px;
+	border: 0 dashed #444;
+	border-left-width: 1px;
+	text-align: center;
+}
+
+.set-tcol {
+	padding: 10px 20px;
+	border: 0 dashed #444;
+	border-left-width: 1px;
+	text-align: center;
+}
+
+#addText {
+	padding: 0 8px;
+	margin-left: 18px;
+	font-family: Serif;
+	font-size: 20px;
+}
+
+.dropdown-btn {
+	border: none;
+	display: inline-block;
+	position: relative;
+	max-width: 50px;
+	min-width: 30px;
+	text-overflow: ellipsis;
+}
+.dropdown-btn:before {
+	content: attr(value) " ▼";
+	text-align: right;
+	display: block;
+	position: absolute;
+	background-color:rgba(255,255,255,.4);
+	left: 0; right: 0; top: 0; bottom: 0;
+}
+.dropdown-list {
+	position: absolute;
+	padding-left: 0;
+	list-style: outside none none;
+	visibility: hidden;
+	margin: 0; z-index: 1;
+	background-color: #fefefe;
+	border: 1px solid;
+	border-color: #f1f1f1 #c1c1c1 #c1c1c1 #f1f1f1;
+}
+.dropdown-item {
+	padding: 5px 10px;
+}
+.dropdown-item:hover {
+	background-color: rgba(0,0,0,.1);
+}
+.active > .dropdown-list {
+	visibility: visible;
+}
+
+input[type="color"] {
+	border: 1px solid #bbb;
+	max-width: 30px;
+	padding: 0;
+}
+input[type="checkbox"]:not(:checked) + label {
+	opacity: .3;
+	text-decoration: line-through;
+}
+label[for="font_bold"]:before {
+	content: 'Bold';
+	cursor: pointer;
+	font: bold 90% monospace;
+}
+label[for="font_italic"]:before {
+	content: 'Italic';
+	cursor: pointer;
+	font: italic 90% monospace;
+}
+label[for="font_family"] {
+	position: relative;
+	display: inline-block;
+}
+#font_family {
+	border: none;
+	width: 100px;
+	background-color: transparent;
+	outline: none;
+	text-decoration-line: underline;
+}
+#font_family:not(:focus) {
+	text-overflow: ellipsis;
+}
+#font_family:focus + .dropdown-list {
+	visibility: visible;
+}
+#font_family + .dropdown-list {
+	background-color: floralwhite;
+}
+.fnt-fam, #font_family {
+	font-size: 14px;
+	color: #807062;
+}
+.fnt-inp-group {
+	border: 2px dashed #aaa;
+	padding: 0 5px;
+	background-color: floralwhite;
+}
+
+@media (orientation: landscape) {
+	body {
+		flex-direction: row;
+	}
+}
+
+@media (orientation: portrait) {
+	#settings_panel {
+		box-shadow: 0 2px 20px -10px #000;
+	}
+	#editable_zone {
+	}
+	body {
+		flex-direction: column;
+	}
+}
