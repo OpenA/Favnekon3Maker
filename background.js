@@ -201,10 +201,10 @@ function InjectScripts(tab_id = TAB_ID_NONE) {
 	return new Promise(resolve => {
 		_Resolves_.set(tab_id, resolve);
 		browser.tabs.insertCSS(tab_id, {
-			allFrames: false, file: '/pasL/pasL.css'
+			allFrames: false, file: 'tools/pasL/pasL.css'
 		});
 		browser.tabs.executeScript(tab_id, {
-			allFrames: false, file: '/pasL/pasL.js'
+			allFrames: false, file: 'tools/pasL/pasL.js'
 		});
 		browser.tabs.insertCSS(tab_id, {
 			allFrames: false, file: 'content_styles.css'
