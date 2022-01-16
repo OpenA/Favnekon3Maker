@@ -13,11 +13,11 @@ const TEXT_OBJECT = {
 	curr_id: '',
 
 	default: Object.freeze({
-		stroke_color : 'black',
+		stroke_color : '#2e3436',
 		stroke_size  : 2,
 		font_family  : 'sans-serif',
 		font_italic  : false,
-		font_color   : 'white',
+		font_color   : '#f3f3f3',
 		font_bold    : true,
 		font_size    : 64,
 		text_align   : 'center',
@@ -43,7 +43,7 @@ const TEXT_OBJECT = {
 			text_content
 		});
 
-		return _setup('code', {
+		const code = _setup('code', {
 			id: 'txt_obj_'+ idx,
 			class: 'macro-text',
 			text: text_content,
@@ -51,7 +51,12 @@ const TEXT_OBJECT = {
 			`color: ${font_color}; text-align: ${text_align}; `+
 			`font: ${font_bold ? 'bold' : ''} ${font_italic ? 'italic' : ''} ${font_size}px "${font_family}"; `+
 			`-webkit-text-stroke: ${stroke_size}px ${stroke_color};`
+		}, {
+			dblclick: () => { code.contentEditable = true; },
+			input   : () => { GLOBAL_PARAMS.texts[idx] = code.innerText; }
 		});
+
+		return code;
 	}
 }
 
@@ -109,6 +114,19 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 		e.preventDefault();
 	});
+
+	edit_z.addEventListener('pointerdown', e => {
+		const el = e.target;
+		e.preventDefault();
+		if (el.classList[0] === 'macro-text') {
+			if (!el.contentEditable) {
+				// move
+			} else return;
+		}
+		for (const code of wlayer.querySelectorAll('.macro-text[contenteditable="true"]')) {
+			code.contentEditable = false;
+		}
+	});
 	edit_z.addEventListener('click', e => {
 		const el = e.target, [cls_main, cls_sec] = el.classList;
 		switch (cls_main) {
@@ -137,6 +155,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		wlayer.prepend(crop.box);
 		outbtn.id = 'out_apply';
 	});
+	crop.box.style.zIndex = null;
+
+	for (const sr of form_params.querySelectorAll('.size-ruler')) {
+		sr.addEventListener('mousedown', onRulChange);
+		//sr.addEventListener('input', onRulChange);
+	}
 });
 
 const clearResult = canvas => {
@@ -155,13 +179,56 @@ const drawResult = (canvas, img) => {
 	contxt.drawImage(img, x, y, w, h, 0, 0, w, h);
 
 	for (const t of GLOBAL_PARAMS.texts) {
+		if (!t) continue;
 		contxt.font        = `${t.font_italic} ${t.font_bold} ${t.font_size}px "${t.font_family}"`;
 		contxt.lineWidth   = t.stroke_size;
 		contxt.strokeStyle = t.stroke_color;
 		contxt.fillStyle   = t.font_color;
 		contxt.textAlign   = t.text_align;
-		contxt.fillText(t.text_content, 0, 0);
-		contxt.strokeText(t.text_content, 0, 0);
+		contxt.textBaseline = 'bottom';
+		contxt.fillText(t.text_content, w/2, 0, w);
+		contxt.strokeText(t.text_content, w/2, 0, w);
 	}
 }
 
+function onRulChange(e) {
+
+	const slider = this.lastElementChild,
+	      params = slider.previousElementSibling,
+	      value  = params.lastElementChild;
+
+	if (e.button !== 0 || e.target === value)
+		return;
+	e.preventDefault();
+
+	const { left, width } = this.getBoundingClientRect();
+
+	const marginX = slider.clientWidth,
+	      maxLeft = width - marginX;
+
+	const name = params.getAttribute('label');
+	const min  = Number(params.getAttribute('min'));
+	const max  = Number(params.getAttribute('max'));
+
+	const onMove = ({ clientX }) => {
+		let s, x = clientX - left - marginX;
+		if (x < 0) {
+			s = min, x = 0;
+		} else  if ( x > maxLeft) {
+			s = max, x = maxLeft;
+		} else {
+			s = Math.floor((clientX - left) / width * max * 10) / 10;
+		}
+		slider.style.left = `${x}px`;
+		value.textContent = s;
+	}
+	const onEnd = () => {
+		window.removeEventListener('mousemove', onMove);
+		window.removeEventListener('mouseup', onEnd);
+	}
+	if (e.target !== slider) {
+		onMove(e);
+	}
+	window.addEventListener('mousemove', onMove);
+	window.addEventListener('mouseup', onEnd);
+}

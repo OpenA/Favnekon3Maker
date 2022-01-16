@@ -30,8 +30,43 @@
 						<span id="Macro"></span>
 					</div>
 				</div>
-				<div class="set-line opts">
-					<input type="color" id="font_color">
+				<div class="set-line set-font">
+					<input id="text_align_left" type="radio" name="text_align" value="left" hidden>
+					<label for="text_align_left">
+						<svg class="tex-ali-lines" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+							<g fill="none">
+							  <path stroke-width="2" d="M0 1h40"/>
+							  <path stroke-width="2" d="M0 10h20"/>
+							  <path stroke-width="2" d="M0 20h30"/>
+							  <path stroke-width="2" d="M0 30h20"/>
+							  <path stroke-width="2" d="M0 39h40"/>
+							</g>
+						</svg>
+					</label>
+					<input id="text_align_center" type="radio" name="text_align" value="center" hidden>
+					<label for="text_align_center">
+						<svg class="tex-ali-lines" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+							<g fill="none">
+								<path stroke-width="2" d="M0 1h40"/>
+								<path stroke-width="2" d="M10 10h20"/>
+								<path stroke-width="2" d="M5 20h30"/>
+								<path stroke-width="2" d="M10 30h20"/>
+								<path stroke-width="2" d="M0 39h40"/>
+							</g>
+						</svg>
+					</label>
+					<input id="text_align_right" type="radio" name="text_align" value="right" hidden>
+					<label for="text_align_right">
+						<svg class="tex-ali-lines" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+							<g fill="none">
+								<path stroke-width="2" d="M0 1h40"/>
+								<path stroke-width="2" d="M20 10h20"/>
+								<path stroke-width="2" d="M10 20h30"/>
+								<path stroke-width="2" d="M20 30h20"/>
+								<path stroke-width="2" d="M0 39h40"/>
+							</g>
+						</svg>
+					</label>
 					<span class="fnt-inp-group">
 					<input type="checkbox" id="font_bold" hidden>
 					<label for="font_bold"></label>
@@ -54,18 +89,24 @@
 					</label>
 					</span>
 				</div>
-				<div class="set-line size-ruler" value="0" label="font">
-					<span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span>
-					<span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span>
-					<span class="I"></span><span class="slider" style="left: 0;"></span>
-					<!-- input type="range" name="font_size_value" step="2" min="8" max="120" style="width: 99%;" -->
+				<div class="set-line set-font">
+					<input type="color" id="font_color">
+					<div class="size-ruler" style="width: 175px;">
+						<rhl></rhl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl>
+						<span class="sr-params" label="font" min="10" max="180">
+							<code class="sr-value" contenteditable="true"></code>
+						</span>
+						<span class="sr-slider" style="left: 0;"></span>
+					</div>
 				</div>
-				<div class="set-line opts">
+				<div class="set-line set-stroke">
 					<input type="color" id="stroke_color">
-					<div class="size-ruler" value="0" label="stroke" style="display: inline-block;">
-						<span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span>
-						<span class="I"></span><span class="I"></span><span class="I"></span><span class="I"></span>
-						<span class="slider" style="left: 0;"></span>
+					<div class="size-ruler" label="stroke" style="width: 155px;">
+						<rhl></rhl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl>
+						<span class="sr-params" label="stroke" min=".5" max="10">
+							<code class="sr-value" contenteditable="true"></code>
+						</span>
+						<span class="sr-slider" style="left: 0;"></span>
 					</div>
 				</div>
 				<input id="file_upload" type="file" hidden/>
