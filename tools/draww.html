@@ -68,10 +68,10 @@
 						</svg>
 					</label>
 					<span class="fnt-inp-group">
-					<input type="checkbox" id="font_bold" hidden>
-					<label for="font_bold"></label>
-					<input type="checkbox" id="font_italic" hidden>
-					<label for="font_italic"></label>
+					<input type="checkbox" id="style_bold" hidden>
+					<label for="style_bold"></label>
+					<input type="checkbox" id="style_italic" hidden>
+					<label for="style_italic"></label>
 					<label for="font_family">
 						<input type="text" id="font_family" value="Sans">
 						<ul class="dropdown-list">
@@ -90,10 +90,10 @@
 					</span>
 				</div>
 				<div class="set-line set-font">
-					<input type="color" id="font_color">
+					<input type="color" id="text_color">
 					<div class="size-ruler" style="width: 175px;">
 						<rhl></rhl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl>
-						<span class="sr-params" label="font" min="10" max="180">
+						<span class="sr-params" label="font" min="10" step="1" max="180">
 							<code class="sr-value" contenteditable="true"></code>
 						</span>
 						<span class="sr-slider" style="left: 0;"></span>
@@ -103,7 +103,7 @@
 					<input type="color" id="stroke_color">
 					<div class="size-ruler" label="stroke" style="width: 155px;">
 						<rhl></rhl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl><rl></rl>
-						<span class="sr-params" label="stroke" min=".5" max="10">
+						<span class="sr-params" label="stroke" min=".5" step=".1" max="10">
 							<code class="sr-value" contenteditable="true"></code>
 						</span>
 						<span class="sr-slider" style="left: 0;"></span>

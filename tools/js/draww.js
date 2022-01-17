@@ -10,53 +10,76 @@ const GLOBAL_PARAMS = {
 const crop = new PasL({ lock: false, edgies: true });
 
 const TEXT_OBJECT = {
-	curr_id: '',
+	curr_el: null,
 
 	default: Object.freeze({
 		stroke_color : '#2e3436',
 		stroke_size  : 2,
 		font_family  : 'sans-serif',
-		font_italic  : false,
-		font_color   : '#f3f3f3',
-		font_bold    : true,
+		style_italic : false,
+		text_color   : '#f3f3f3',
+		style_bold   : true,
 		font_size    : 64,
 		text_align   : 'center',
 		text_content : 'Example Text'
 	}),
 
+	apply(key, param, val) {
+
+		if (!this.curr_el)
+			return;
+
+		const { style, id } = this.curr_el,
+		     idx = Number(id.substring('txt_obj_'.length)) - 1,
+		  params = GLOBAL_PARAMS.texts[idx];
+
+		if (param === 'size') {
+			style[
+				key === 'stroke' ? '-webkit-text-stroke-width' :
+				key === 'font'   ? 'font-size' : ''] = `${val}px`;
+		} else if (key === 'style') {
+			style[
+				param === 'bold'   ? 'font-weight' :
+				param === 'italic' ? 'font-style'  : ''] = val ? param : null;
+		} else {
+			style[
+				param === 'family' ? 'font-family' :
+				param === 'color'  ? `${key === 'stroke' ? '-webkit-text-stroke-' : ''}color` :
+				param === 'align'  ? 'text-align' : '' ] = val;
+		}
+		if (params)
+			params[key +'_'+ param] = val;
+	},
+
 	create(copy_id = -1) {
 		const ctxt = GLOBAL_PARAMS.texts[copy_id];
 
-		const {
-			stroke_color, stroke_size,
-			font_family, font_italic,
-			font_color, font_bold,
-			font_size, text_align,
-			text_content
-		} = ctxt ? ctxt : this.default;
+		const p = Object.copy({}, ctxt || this.default),
+		    num = GLOBAL_PARAMS.texts.push(p);
 
-		const idx = GLOBAL_PARAMS.texts.push({
-			stroke_color, stroke_size,
-			font_family, font_italic,
-			font_color, font_bold,
-			font_size, text_align,
-			text_content
-		});
-
-		const code = _setup('code', {
-			id: 'txt_obj_'+ idx,
-			class: 'macro-text',
-			text: text_content,
-			style: ''+
-			`color: ${font_color}; text-align: ${text_align}; `+
-			`font: ${font_bold ? 'bold' : ''} ${font_italic ? 'italic' : ''} ${font_size}px "${font_family}"; `+
-			`-webkit-text-stroke: ${stroke_size}px ${stroke_color};`
+		const el = _setup('code', {
+			id    : 'txt_obj_'+ num,
+			class : 'macro-text',
+			text  : p.text_content
 		}, {
-			dblclick: () => { code.contentEditable = true; },
-			input   : () => { GLOBAL_PARAMS.texts[idx] = code.innerText; }
+			dblclick: () => { el.contentEditable = true; },
+			input   : () => { p.text_content = el.innerText; }
 		});
+		el.style['-webkit-text-stroke-width'] = `${p.stroke_size}px`;
+		el.style['-webkit-text-stroke-color'] = p.stroke_color;
+		el.style.fontFamily = p.font_family;
+		el.style.fontSize   = `${p.font_size}px`;
+		el.style.color      = p.text_color;
+		el.style.textAlign  = p.text_align;
+		el.style.fontWeight = p.style_bold ? 'bold' : null;
+		el.style.fontStyle  = p.style_italic ? 'italic' : null;
+		return (this.curr_el = el);
+	},
 
-		return code;
+	capture(el) {
+		const { id } = (this.curr_el = el),
+		     idx = Number(id.substring('txt_obj_'.length)) - 1;
+		return GLOBAL_PARAMS.texts[idx];
 	}
 }
 
@@ -71,10 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
 	const edit_z = document.getElementById('editable_zone');
 
 	form_params.addEventListener('change', ({ target }) => {
-		switch (target.id) {
-		case 'file_upload':
+		let [ key, param, val ] = target.id.split('_');
+
+		if (key === 'file') {
 			wrkimg.src = URL.createObjectURL(target.files[0]);
-			break;
+		} else {
+			if(!val)
+				val = target[target.type === 'checkbox' ? 'checked' : 'value'];
+			TEXT_OBJECT.apply(key, param, val);
 		}
 	});
 
@@ -119,9 +146,20 @@ document.addEventListener('DOMContentLoaded', () => {
 		const el = e.target;
 		e.preventDefault();
 		if (el.classList[0] === 'macro-text') {
+			const stores = TEXT_OBJECT.capture(el);
+			for (let key in stores) {
+				if (key in form_elems) {
+					form_elems[key][(
+						form_elems[key].type === 'checkbox' ? 'checked' : 'value'
+					)] = stores[key];
+				}
+			}
+			form_params.classList.add('disp-font', 'disp-stroke');
 			if (!el.contentEditable) {
 				// move
 			} else return;
+		} else {
+			TEXT_OBJECT.curr_el = null;
 		}
 		for (const code of wlayer.querySelectorAll('.macro-text[contenteditable="true"]')) {
 			code.contentEditable = false;
@@ -159,7 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	for (const sr of form_params.querySelectorAll('.size-ruler')) {
 		sr.addEventListener('mousedown', onRulChange);
-		//sr.addEventListener('input', onRulChange);
+		sr.addEventListener('input', e => {
+			/*...*/ clearTimeout(sr._t);
+			sr._t = setTimeout(onRulChange.bind(sr, e), 500);
+		});
 	}
 });
 
@@ -180,10 +221,10 @@ const drawResult = (canvas, img) => {
 
 	for (const t of GLOBAL_PARAMS.texts) {
 		if (!t) continue;
-		contxt.font        = `${t.font_italic} ${t.font_bold} ${t.font_size}px "${t.font_family}"`;
+		contxt.font        = `${t.style_italic} ${t.style_bold} ${t.font_size}px "${t.font_family}"`;
 		contxt.lineWidth   = t.stroke_size;
 		contxt.strokeStyle = t.stroke_color;
-		contxt.fillStyle   = t.font_color;
+		contxt.fillStyle   = t.text_color;
 		contxt.textAlign   = t.text_align;
 		contxt.textBaseline = 'bottom';
 		contxt.fillText(t.text_content, w/2, 0, w);
@@ -197,9 +238,8 @@ function onRulChange(e) {
 	      params = slider.previousElementSibling,
 	      value  = params.lastElementChild;
 
-	if (e.button !== 0 || e.target === value)
+	if (e.type !== 'input' && (e.button !== 0 || e.target === value))
 		return;
-	e.preventDefault();
 
 	const { left, width } = this.getBoundingClientRect();
 
@@ -209,26 +249,46 @@ function onRulChange(e) {
 	const name = params.getAttribute('label');
 	const min  = Number(params.getAttribute('min'));
 	const max  = Number(params.getAttribute('max'));
+	const step = params.getAttribute('step');
 
-	const onMove = ({ clientX }) => {
-		let s, x = clientX - left - marginX;
-		if (x < 0) {
-			s = min, x = 0;
-		} else  if ( x > maxLeft) {
-			s = max, x = maxLeft;
+	let x, i = step && step.indexOf('.') + 1,
+	    v, r = i ? step.substring(i).length * 10 : 1;
+
+	if (e.type === 'input') {
+		v = value.textContent;
+		v = v ? (i ? Math.floor(parseFloat(v) * r) / r : parseInt(v)) : 0;
+		if (v < min) {
+			v = min, x = 0;
+		} else  if ( v > max ) {
+			v = max, x = maxLeft;
 		} else {
-			s = Math.floor((clientX - left) / width * max * 10) / 10;
+			x = Math.floor(maxLeft * ((v - min) / (max - min)));
 		}
 		slider.style.left = `${x}px`;
-		value.textContent = s;
+		value.textContent = v.toString();
+		TEXT_OBJECT.apply(name, 'size', v);
+	} else {
+		const onMove = ({ clientX }) => {
+			let x = clientX - left - marginX;
+			if (x < 0) {
+				v = min, x = 0;
+			} else  if ( x > maxLeft) {
+				v = max, x = maxLeft;
+			} else {
+				v = Math.floor((clientX - left) / width * max * r) / r;
+			}
+			slider.style.left = `${x}px`;
+			value.textContent = v.toString();
+			TEXT_OBJECT.apply(name, 'size', v);
+		}
+		const onEnd = () => {
+			window.removeEventListener('mousemove', onMove);
+			window.removeEventListener('mouseup', onEnd);
+		}
+		if (e.target !== slider)
+			onMove(e);
+		e.preventDefault();
+		window.addEventListener('mousemove', onMove);
+		window.addEventListener('mouseup', onEnd);
 	}
-	const onEnd = () => {
-		window.removeEventListener('mousemove', onMove);
-		window.removeEventListener('mouseup', onEnd);
-	}
-	if (e.target !== slider) {
-		onMove(e);
-	}
-	window.addEventListener('mousemove', onMove);
-	window.addEventListener('mouseup', onEnd);
 }

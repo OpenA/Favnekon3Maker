@@ -28,7 +28,7 @@ body {
 	user-select: none;
 }
 .set-font, .set-stroke {
-	display: inherit;
+	display: none;
 }
 .disp-font > .set-font, .disp-stroke > .set-stroke {
 	display: inherit;
@@ -354,12 +354,12 @@ input[name="text_align"]:checked + label[for] {
 	opacity: .3;
 	text-decoration: line-through;
 }
-label[for="font_bold"]:before {
+label[for="style_bold"]:before {
 	content: 'Bold';
 	cursor: pointer;
 	font: bold 90% monospace;
 }
-label[for="font_italic"]:before {
+label[for="style_italic"]:before {
 	content: 'Italic';
 	cursor: pointer;
 	font: italic 90% monospace;
