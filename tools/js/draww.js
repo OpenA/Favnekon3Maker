@@ -37,13 +37,14 @@ const TEXT_OBJECT = {
 			style[
 				key === 'stroke' ? '-webkit-text-stroke-width' :
 				key === 'font'   ? 'font-size' : ''] = `${val}px`;
+		} else if (param === 'family') {
+			style['font-family'] = `"${val}"`;
 		} else if (key === 'style') {
 			style[
 				param === 'bold'   ? 'font-weight' :
 				param === 'italic' ? 'font-style'  : ''] = val ? param : null;
 		} else {
 			style[
-				param === 'family' ? 'font-family' :
 				param === 'color'  ? `${key === 'stroke' ? '-webkit-text-stroke-' : ''}color` :
 				param === 'align'  ? 'text-align' : '' ] = val;
 		}
@@ -54,7 +55,7 @@ const TEXT_OBJECT = {
 	create(copy_id = -1) {
 		const ctxt = GLOBAL_PARAMS.texts[copy_id];
 
-		const p = Object.copy({}, ctxt || this.default),
+		const p = Object.assign({}, ctxt || this.default),
 		    num = GLOBAL_PARAMS.texts.push(p);
 
 		const el = _setup('code', {
@@ -67,7 +68,7 @@ const TEXT_OBJECT = {
 		});
 		el.style['-webkit-text-stroke-width'] = `${p.stroke_size}px`;
 		el.style['-webkit-text-stroke-color'] = p.stroke_color;
-		el.style.fontFamily = p.font_family;
+		el.style.fontFamily = `"${p.font_family}"`;
 		el.style.fontSize   = `${p.font_size}px`;
 		el.style.color      = p.text_color;
 		el.style.textAlign  = p.text_align;
@@ -108,7 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	form_elems.font_family.nextElementSibling.addEventListener('pointerdown', e => {
 		const el = e.target;
 		if (el.classList[0] === 'dropdown-item') {
-			form_elems.font_family.value = el.innerText;
+			TEXT_OBJECT.apply('font', 'family', (
+				form_elems.font_family.value = el.innerText
+			));
 		}
 		e.preventDefault();
 	});
