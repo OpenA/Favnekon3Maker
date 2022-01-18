@@ -185,18 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 	wrkimg.addEventListener('load', () => {
 
-		let x = 0, y = 0, w = wrkimg.width, h = wrkimg.height;
-	
-		if (w > h) {
-			x = (w - h) * .5, w = h;
-		} else if (w < h) {
-			y = (h - w) * .5, h = w;
-		}
-		crop.selectZone(wrkimg, x, y, w, h);
+		const { width, height } = wrkimg;
+
+		crop.setZone(width, height);
 		wlayer.prepend(crop.box);
 		outbtn.id = 'out_apply';
 	});
-	crop.box.style.zIndex = null;
 
 	for (const sr of form_params.querySelectorAll('.size-ruler')) {
 		sr.addEventListener('mousedown', onRulChange);
@@ -214,7 +208,8 @@ const clearResult = canvas => {
 
 const drawResult = (canvas, img) => {
 
-	const [x, y, w, h] = crop.getCoords();
+	const scale = img.naturalWidth / img.width;
+	const [x, y, w, h] = crop.getCoords(scale);
 
 	canvas.width = w, canvas.height = h;
 

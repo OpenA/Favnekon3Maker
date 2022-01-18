@@ -276,17 +276,9 @@ function barChanger(e) {
 
 function imageLoad(e) {
 
-	let start_x = 0, sel_w = e.target.width;
-	let start_y = 0, sel_h = e.target.height;
+	const { width, height } = e.target;
 
-	if (sel_w > sel_h) {
-		start_x = (e.target.width - e.target.height) / 2;
-		  sel_w =  e.target.height;
-	} else if (sel_w < sel_h) {
-		start_y = (e.target.height - e.target.width) / 2;
-		  sel_h =  e.target.width;
-	}
-	sarea.selectZone(e.target, start_x, start_y, sel_w, sel_h);
+	sarea.setZone(width, height);
 	drawFavnekon(false);
 }
 
@@ -309,7 +301,8 @@ function fileUpload(e) {
 function drawFavnekon(update = true) {
 
 	try {
-		const [X, Y, W, H] = sarea.getCoords();
+		const scale = image.naturalWidth / image.width;
+		const [X, Y, W, H] = sarea.getCoords(scale);
 		const ctx = canvas.getContext('2d');
 		ctx.clearRect(0, 0, Q_HEIGHT, Q_HEIGHT);
 
