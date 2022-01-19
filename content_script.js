@@ -16,7 +16,7 @@ const Favn3kon = {
 			fetch(src).then(res => res.blob()).then(blob => {
 				image.src = URL.createObjectURL(blob);
 			});
-			drop.prepend( sarea.box, image );
+			drop.prepend( pasl.box, image );
 			canvas.style = '';
 		}
 		document.body.appendChild(overlay);
@@ -145,10 +145,10 @@ const overlay = _setup('div' , { id: 'nk3__shadowBoxOverlay', html: `
 
 const canvas = overlay.querySelector('#nk3__previewIcon'),
       deffav = overlay.querySelector('#nk3__faviconDefault'),
-      sarea  = new PasL({ lock: true, edgies: false }),
+      pasl   = new PasL({ lock: true, edgies: false }),
       drop   = _setup(overlay.querySelector('droparea'), null, { dragover: e => { e.preventDefault() }, drop: fileUpload });
 
-sarea.addListener('MoveEnd', drawFavnekon);
+pasl.addListener('endAction', drawFavnekon);
 drop.children['nk3__dropDownArrow'].addEventListener('change', fileUpload);
 overlay.querySelector('.brithnes').addEventListener('mousedown', barChanger);
 overlay
@@ -278,13 +278,13 @@ function imageLoad(e) {
 
 	const { width, height } = e.target;
 
-	sarea.setZone(width, height);
+	pasl.setZone(width, height);
 	drawFavnekon(false);
 }
 
 function imageReset() {
 	image.remove();
-	sarea.box.remove();
+	pasl.box.remove();
 	if (/^blob\:/.test(image.src))
 		URL.revokeObjectURL(image.src);
 }
@@ -302,7 +302,7 @@ function drawFavnekon(update = true) {
 
 	try {
 		const scale = image.naturalWidth / image.width;
-		const [X, Y, W, H] = sarea.getCoords(scale);
+		const [X, Y, W, H] = pasl.getCoords(scale);
 		const ctx = canvas.getContext('2d');
 		ctx.clearRect(0, 0, Q_HEIGHT, Q_HEIGHT);
 

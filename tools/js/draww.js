@@ -85,8 +85,8 @@ const TEXT_OBJECT = {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-	const form_params = document.forms.global_params,
-	      form_elems  = form_params.elements;
+	const gl_params = document.getElementById('global_params'),
+	      gl_elems  = gl_params.getElementsByTagName('input');
 
 	const canvas = document.getElementById('preview_canvas');
 	const outbtn = document.getElementById('out_nothing');
@@ -94,29 +94,37 @@ document.addEventListener('DOMContentLoaded', () => {
 	const wlayer = document.getElementById('work_layer');
 	const edit_z = document.getElementById('editable_zone');
 
-	form_params.addEventListener('change', ({ target }) => {
+	gl_params.addEventListener('change', ({ target }) => {
 		let [ key, param, val ] = target.id.split('_');
 
 		if (key === 'file') {
 			wrkimg.src = URL.createObjectURL(target.files[0]);
 		} else {
-			if(!val)
-				val = target[target.type === 'checkbox' ? 'checked' : 'value'];
+			const type = target.type;
+			if(!val) {
+				val = target[
+				  !type ? target.innerText :
+				   type === 'number' ? 'numberValue' :
+				   type === 'checkbox' ? 'checked' : 'value'
+				];
+			}
 			TEXT_OBJECT.apply(key, param, val);
 		}
 	});
 
-	form_elems.font_family.nextElementSibling.addEventListener('pointerdown', e => {
+	const font_family = document.getElementById('font_family');
+
+	font_family.nextElementSibling.addEventListener(onScreen.PointDown, e => {
 		const el = e.target;
 		if (el.classList[0] === 'dropdown-item') {
 			TEXT_OBJECT.apply('font', 'family', (
-				form_elems.font_family.value = el.innerText
+				font_family.value = el.innerText
 			));
 		}
 		e.preventDefault();
 	});
 
-	form_params.firstElementChild.addEventListener('click', e => {
+	gl_params.firstElementChild.addEventListener('click', e => {
 		const el = e.target;
 		if (el.id === 'Macro') {
 			wlayer.append(
@@ -126,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		e.preventDefault();
 	});
 
-	outbtn.addEventListener('pointerdown', e => {
+	outbtn.addEventListener(onScreen.PointDown, e => {
 		const el = e.target, { classList, id } = el;
 		if (classList[0] === 'out-btn') {
 			if (id === 'out_apply') {
@@ -145,19 +153,19 @@ document.addEventListener('DOMContentLoaded', () => {
 		e.preventDefault();
 	});
 
-	edit_z.addEventListener('pointerdown', e => {
+	edit_z.addEventListener(onScreen.PointDown, e => {
 		const el = e.target;
-		e.preventDefault();
 		if (el.classList[0] === 'macro-text') {
 			const stores = TEXT_OBJECT.capture(el);
 			for (let key in stores) {
-				if (key in form_elems) {
-					form_elems[key][(
-						form_elems[key].type === 'checkbox' ? 'checked' : 'value'
+				const elem =  document.getElementById(key);
+				if (elem) {
+					elem[(
+						elem.type === 'checkbox' ? 'checked' : 'value'
 					)] = stores[key];
 				}
 			}
-			form_params.classList.add('disp-font', 'disp-stroke');
+			gl_params.classList.add('disp-font', 'disp-stroke');
 			if (!el.contentEditable) {
 				// move
 			} else return;
@@ -179,8 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (/^blob\:/.test(url))
 					URL.revokeObjectURL(url);
 			} else
-				form_elems.file_upload.click();
-			
+				gl_elems.file_upload.click();
 		}
 	});
 	wrkimg.addEventListener('load', () => {
@@ -192,8 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		outbtn.id = 'out_apply';
 	});
 
-	for (const sr of form_params.querySelectorAll('.size-ruler')) {
-		sr.addEventListener('mousedown', onRulChange);
+	for (const sr of gl_params.querySelectorAll('.size-ruler')) {
+		sr.addEventListener(onScreen.PointDown, onRulChange);
 		sr.addEventListener('input', e => {
 			/*...*/ clearTimeout(sr._t);
 			sr._t = setTimeout(onRulChange.bind(sr, e), 500);
