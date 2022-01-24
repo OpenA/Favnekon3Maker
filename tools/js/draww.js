@@ -17,7 +17,7 @@ const TEXT_OBJECT = {
 		stroke_size  : 2,
 		font_family  : 'sans-serif',
 		style_italic : false,
-		text_color   : '#f3f3f3',
+		fill_color   : '#f3f3f3',
 		style_bold   : true,
 		font_size    : 64,
 		text_align   : 'center',
@@ -70,7 +70,7 @@ const TEXT_OBJECT = {
 		el.style['-webkit-text-stroke-color'] = p.stroke_color;
 		el.style.fontFamily = `"${p.font_family}"`;
 		el.style.fontSize   = `${p.font_size}px`;
-		el.style.color      = p.text_color;
+		el.style.color      = p.fill_color;
 		el.style.textAlign  = p.text_align;
 		el.style.fontWeight = p.style_bold ? 'bold' : null;
 		el.style.fontStyle  = p.style_italic ? 'italic' : null;
@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const wrkimg = document.getElementById('work_img');
 	const wlayer = document.getElementById('work_layer');
 	const edit_z = document.getElementById('editable_zone');
+	const ondown = winHasPointer ? 'pointerdown' : winHasTouch ? 'touchstart' : 'mousedown';
 
 	gl_params.addEventListener('change', ({ target }) => {
 		let [ key, param, val ] = target.id.split('_');
@@ -114,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const font_family = document.getElementById('font_family');
 
-	font_family.nextElementSibling.addEventListener(onScreen.PointDown, e => {
+	font_family.nextElementSibling.addEventListener(ondown, e => {
 		const el = e.target;
 		if (el.classList[0] === 'dropdown-item') {
 			TEXT_OBJECT.apply('font', 'family', (
@@ -134,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		e.preventDefault();
 	});
 
-	outbtn.addEventListener(onScreen.PointDown, e => {
+	outbtn.addEventListener(ondown, e => {
 		const el = e.target, { classList, id } = el;
 		if (classList[0] === 'out-btn') {
 			if (id === 'out_apply') {
@@ -153,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		e.preventDefault();
 	});
 
-	edit_z.addEventListener(onScreen.PointDown, e => {
+	edit_z.addEventListener(ondown, e => {
 		const el = e.target;
 		if (el.classList[0] === 'macro-text') {
 			const stores = TEXT_OBJECT.capture(el);
@@ -200,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	for (const sr of gl_params.querySelectorAll('.size-ruler')) {
-		sr.addEventListener(onScreen.PointDown, onRulChange);
+		sr.addEventListener(ondown, onRulChange);
 		sr.addEventListener('input', e => {
 			/*...*/ clearTimeout(sr._t);
 			sr._t = setTimeout(onRulChange.bind(sr, e), 500);
@@ -229,7 +230,7 @@ const drawResult = (canvas, img) => {
 		contxt.font        = `${t.style_italic} ${t.style_bold} ${t.font_size}px "${t.font_family}"`;
 		contxt.lineWidth   = t.stroke_size;
 		contxt.strokeStyle = t.stroke_color;
-		contxt.fillStyle   = t.text_color;
+		contxt.fillStyle   = t.fill_color;
 		contxt.textAlign   = t.text_align;
 		contxt.textBaseline = 'bottom';
 		contxt.fillText(t.text_content, w/2, 0, w);

@@ -131,8 +131,10 @@ body {
 	box-shadow: 0 0 0 1px white;
 	font-variant-caps: unicase;*/
 }
-
-.macro-text:focus {
+.macro-text:after {
+	content: '\20';
+}
+.macro-text[contenteditable="false"] {
 	cursor: default;
 }
 #bottom-text {
