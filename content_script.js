@@ -13,11 +13,8 @@ const Favn3kon = {
 	pushKat: (src = '') => {
 		imageReset();
 		if (src) {
-			fetch(src).then(res => res.blob()).then(blob => {
-				image.src = URL.createObjectURL(blob);
-			});
-			drop.prepend( pasl.box, image );
-			canvas.style = '';
+			dropbx.prepend( ldstub, image );
+			fetch(src).then(res => res.blob()).then(imageLoad);
 		}
 		document.body.appendChild(overlay);
 	},
@@ -52,20 +49,20 @@ const Favn3kon = {
 		document.head.append(link);
 	},
 
-	initMe: function({ apply, pixelData, brightness, colorAjusts, hash }) {
+	initM3({ apply, pixelData, brightness, colorAjusts, hash }) {
 		if (pixelData) {
 			const contxt = canvas.getContext('2d'),
 				  pixels = imgDataCpy(contxt, pixelData);
 
 			if (Boolean(colorAjusts.length)) {
-				const filters = overlay.querySelectorAll(`[itemprop="${ colorAjusts.join('"],[itemprop="') }"]`);
 				for (let i = 0; i < colorAjusts.length; i++) {
-					ColorFilter[ (this.colorAjusts[i] = colorAjusts[i]) ](pixels.data);
-					filters[i].classList.add('ch-x-k');
+					const name = (this.colorAjusts[i] = colorAjusts[i]);
+					ColorFilter[name](pixels.data);
+					prefs.children[`nk3__${name}Filter`].classList.add('ch-x-k');
 				}
 			}
 			if (Boolean(brightness)) {
-				overlay.querySelector('.brithnes > .block').style.left = `${ (this.brightness = brightness) + 50 }%`;
+				expose.firstElementChild.style.left = `${ (this.brightness = brightness) + 50 }%`;
 				ColorFilter.expose(pixels.data, brightness);
 			}
 			this.hash = hash;
@@ -73,103 +70,161 @@ const Favn3kon = {
 			contxt.putImageData(pixels, 0, 0);
 
 			if((this.apply = apply)) {
+				
 				deffav.classList.remove('ch-x-k');
 				canvas.classList.add('ch-x-k');
 			}
 		}
 		this.put3kon(apply);
 	},
-	handleEvent: function({ target }) {
-		switch (target.id) {
-			case 'nk3__overlayCloseBtn':
-				overlay.remove();
-				break;
-			case 'nk3__dropDownArrow':
-				target.firstElementChild.click();
-				break;
-			case 'nk3__faviconDefault': /* target = deffav */
-				this.apply = false;
-				canvas.classList.remove('ch-x-k');
-				target.classList.add('ch-x-k');
-				link.href = target.src;
-				storeData();
-				break;
-			case 'nk3__previewIcon': /* target = canvas */
-				this.apply = true;
-				target.classList.add('ch-x-k');
-				deffav.classList.remove('ch-x-k');
-				link.href = target.toDataURL();
-				storeData();
-				break;
-			case 'nk3__addFilter':
-				let name = target.getAttribute('itemprop');
-				if (target.classList.toggle('ch-x-k')) {
-					this.colorAjusts.push(name);
-				} else {
-					this.colorAjusts.splice(
-						this.colorAjusts.indexOf(name), 1);
-				}
-				applyFilters();
-				storeData();
+
+	n3kon3kt: null,
+
+	requ3st(req = '', data = null) {
+		let kon3kt = this.n3kon3kt;
+		if(!kon3kt) {
+			kon3kt = this.n3kon3kt = new Promise(resolve => {
+				const port = chrome.runtime.connect();
+				port.onMessage.addListener(({ action, data }) => {
+					this[action](data);
+				});
+				port.onDisconnect.addListener(() => {
+					this.n3kon3kt = null;
+				});
+				resolve(port);
+			});
+		}
+		if (req) {
+			kon3kt.then(port => port.postMessage({ action: req, data }));
+		}
+	},
+
+	storeData(changes = {}, upd_ico = false) {
+		let { apply, hash, pixelData, brightness, colorAjusts } = this;
+		
+		if ('apply' in changes)
+			apply = this.apply = changes.apply;
+		if ('brightness' in changes)
+			brightness = this.brightness = changes.brightness;
+		if ('hash' in changes) {
+			hash = this.hash = changes.hash;
+			Object.assign(pixelData, (this.pixelData = changes.pixelData));
+		}
+		link.href = (apply ? canvas.toDataURL() : deffav.src);
+		this.requ3st(
+			(upd_ico ? 'upd:3plz' : 'save:3plz'),
+			{ apply, hash, pixelData, brightness, colorAjusts }
+		);
+	}
+};
+
+const onClick = e => {
+
+	const { target } = e, el_class = target.classList;
+	e.stopPropagation();
+
+	switch (el_class[0]) {
+	case 'nk3-ico':
+		if(!el_class.contains('ch-x-k')) {
+			el_class.add('ch-x-k');
+			const apply = target === canvas;
+			(apply ? deffav : canvas).classList.remove('ch-x-k');
+			Favn3kon.storeData({ apply });
+		}
+		break;
+	case 'nk3-filter':
+		const name = target.getAttribute('itemprop'),
+		   filters = Favn3kon.colorAjusts;
+		if (el_class.toggle('ch-x-k')) {
+			filters.push(name);
+		} else {
+			filters.splice(filters.indexOf(name), 1);
+		}
+		applyFilters(Favn3kon.brightness);
+		Favn3kon.storeData();
+		break;
+	default:
+		if (target.id === 'nk3__CloseBtn') {
+			overlay.remove();
 		}
 	}
 };
 
-const link    = _setup('link', { id: 'favn__3kon', rel: 'icon' });
-const image   = _setup('img' , { id: 'nk3__workaroundImage' }, { error: imageReset, load: imageLoad });
-const overlay = _setup('div' , { id: 'nk3__shadowBoxOverlay', html: `
-	<div id="nk3__magnethingCard">
-		<input id="nk3__addURLInput" type="text" placeholder="Image URL">
-		<label id="nk3__overlayCloseBtn"></label>
-		<citab>
-			<canvas id="nk3__previewIcon" width="${Q_HEIGHT}" height="${Q_HEIGHT}" class="pre-fav"></canvas>
-			<img id="nk3__faviconDefault" width="${Q_HEIGHT}" height="${Q_HEIGHT}" class="pre-fav ch-x-k">
-			<div id="nk3__addFilter" class="fill-fav" itemprop="gray"></div>
-			<div id="nk3__addFilter" class="fill-fav" itemprop="sepia"></div>
-			<div id="nk3__addFilter" class="fill-fav" itemprop="invert"></div>
-			<div id="nk3__addFilter" class="fill-fav" itemprop="koda"></div>
-			<div id="nk3__addFilter" class="fill-fav" itemprop="polar"></div>
-			<div id="nk3__addFilter" class="fill-fav" itemprop="technie"></div>
-			<div id="nk3__addFilter" class="fill-fav" itemprop="brownie"></div>
-			<div class="brithnes">
-				<div class="block" style="background-color: inherit; left: 50%;"></div>
-			</div>
-		</citab>
-		<droparea>
-			<div id="nk3__dropDownArrow"><input type="file" style="display: none!important;"></div>
-		</droparea>
-	</div>`
-}, { 
-	click: Favn3kon
+const pasl    = new PasL({ lock: true, edgies: false });
+
+const link    = _setup('link'  , { id: 'nk3__favIkon', rel: 'icon' });
+const canvas  = _setup('canvas', { id: 'nk3__Result' , class: 'nk3-ico', width: Q_HEIGHT, height: Q_HEIGHT });
+const deffav  = _setup('img'   , { id: 'nk3__Default', class: 'nk3-ico ch-x-k', width: Q_HEIGHT, height: Q_HEIGHT });
+
+const ldstub  = _setup('div' , { style: 'margin-left: 20px; position: absolute;', html: getLoadingIcon() });
+const mCard   = _setup('div' , { id: 'nk3__magCard' }, { click: onClick });
+const expose  = _setup('div' , { id: 'nk3__Expose' });
+const image   = _setup('img' , { id: 'nk3__wkImage', src: '' });
+const overlay = _setup('div' , { id: 'nk3__Overlay', style: 'position: fixed; left: 0; top: 0; height: 0; width: 100%; z-index: 999999;'});
+const dropbx  = _setup('div' , { id: 'nk3__DropBox', class: 'ci-tab' }, { drop: fileUpload, dragover: e => e.preventDefault() });
+const prefs   = _setup('div' , { id: 'nk3__Prefs'  , class: 'ci-tab' });
+const urlCinp = _setup('code', { id: 'nk3__Input'  , contentEditable: true }, {
+	keydown: e => {
+		if (e.key === 'ArrowRight') {
+			const comp = e.target.getAttribute('autocomp');
+			if (comp) {
+				const sel = window.getSelection(),
+				    range = sel.getRangeAt(0),
+					offs  = sel.anchorNode.length + comp.length;
+				sel.anchorNode.appendData(comp);
+				e.preventDefault();
+				e.target.setAttribute('autocomp', '');
+				range.setStart(sel.anchorNode, offs);
+				range.setEnd(sel.anchorNode, offs);
+			}
+		} else if (e.key === 'Enter') {
+			const text = e.target.innerText;
+			e.preventDefault();
+			if (text !== 'clear') {
+				e.target.style.color = loadURL(text) ? null : 'red';
+			} else
+				imageReset();
+			e.target.textContent = '';
+		}
+	},
+	input: ({ target }) => {
+		const text = target.innerText,
+		       cnt = text.length;
+		let comp = '';
+		if (cnt > 0 && cnt <= 'clear'.length && 'clear'.substring(0,cnt) === text) {
+			comp = 'clear'.substring(cnt);
+		}
+		target.setAttribute('autocomp', comp);
+	}
 });
 
-const canvas = overlay.querySelector('#nk3__previewIcon'),
-      deffav = overlay.querySelector('#nk3__faviconDefault'),
-      pasl   = new PasL({ lock: true, edgies: false }),
-      drop   = _setup(overlay.querySelector('droparea'), null, { dragover: e => { e.preventDefault() }, drop: fileUpload });
+mCard.addEventListener(PasL.onEndEvent, () => drawFavnekon(true));
+mCard.append(
+	urlCinp, prefs, dropbx,
+	_setup('div', { id: 'nk3__CloseBtn' })
+);
+prefs.append(
+	canvas, deffav,
+	_setup('div', { id: 'nk3__grayFilter'   , class: 'nk3-filter', itemprop: 'gray' }),
+	_setup('div', { id: 'nk3__sepiaFilter'  , class: 'nk3-filter', itemprop: 'sepia' }),
+	_setup('div', { id: 'nk3__invertFilter' , class: 'nk3-filter', itemprop: 'invert' }),
+	_setup('div', { id: 'nk3__kodaFilter'   , class: 'nk3-filter', itemprop: 'koda' }),
+	_setup('div', { id: 'nk3__polarFilter'  , class: 'nk3-filter', itemprop: 'polar' }),
+	_setup('div', { id: 'nk3__technieFilter', class: 'nk3-filter', itemprop: 'technie' }),
+	_setup('div', { id: 'nk3__brownieFilter', class: 'nk3-filter', itemprop: 'brownie' }),
+	expose
+);
+expose.addEventListener('mousedown', barChanger);
+expose.append(
+	_setup('div'  , { id: 'nk3__exSlider', style: 'background-color: inherit; left: 50%;' }));
+dropbx.appendChild(
+	_setup('label', { id: 'nk3__dropArrow' })
+).append(
+	_setup('input', { type: 'file', style: 'display: none;' }, { change: fileUpload })
+);
+overlay.append( mCard );
 
-pasl.addListener('endAction', drawFavnekon);
-drop.children['nk3__dropDownArrow'].addEventListener('change', fileUpload);
-overlay.querySelector('.brithnes').addEventListener('mousedown', barChanger);
-overlay
-	.querySelector('#nk3__addURLInput')
-	.addEventListener('input', ({ target }) => {
-		try {
-			const { host, protocol, href } = new URL(target.value);
-			if (protocol == 'data:' || host === location.host) {
-				Favn3kon.pushKat(href);
-				target.value = '';
-			} else {
-				chrome.runtime.sendMessage({ name: 'image:3plz', data: href });
-			}
-			target.style.color = null;
-		} catch {
-			target.style.color = 'red';
-		}
-	});
-
-chrome.runtime.onMessage.addListener(({ action, data }) => { Favn3kon[action](data) });
-chrome.runtime.sendMessage({ name: 'n3kon3kt' });
+Favn3kon.requ3st(); // connect to background
 
 const ColorFilter = {
 	// from Fabric.js Image Filters ( original source code http://fabricjs.com/image-filters )
@@ -243,50 +298,80 @@ function barChanger(e) {
 	const { style } = this.firstElementChild;
 	const { left, width } = this.getBoundingClientRect();
 
+	let brightness = 0;
+
 	const barMove = ({ clientX }) => {
 		let pct = Math.round((clientX - left) / width * 100);
 		if (pct > 100) {
 			style.left = '100%';
-			Favn3kon.brightness = 50;
+			brightness = 50;
 		} else if (pct < 0) {
 			style.left = '0';
-			Favn3kon.brightness = -50;
-		} else if (pct > 48 && pct < 51) {
+			brightness = -50;
+		} else if (pct > 48 && pct < 52) {
 			style.left = '50%';
-			Favn3kon.brightness = 0;
+			brightness = 0;
 		} else {
 			style.left = `${pct}%`;
-			Favn3kon.brightness = pct - 50;
+			brightness = pct - 50;
 		}
-		applyFilters();
+		applyFilters(brightness);
 	};
-	
 	const barEnd = () => {
-		storeData();
-		style['background-color'] = 'inherit';
+		Favn3kon.storeData({ brightness });
+		style.backgroundColor = 'inherit';
 		window.removeEventListener('mousemove', barMove, false);
 		window.removeEventListener('mouseup', barEnd, false);
 	}
-	style['background-color'] = 'green';
+	style.backgroundColor = 'green';
 	barMove(e);
 	
 	window.addEventListener('mousemove', barMove, false);
 	window.addEventListener('mouseup', barEnd, false);
 }
 
-function imageLoad(e) {
-
-	const { width, height } = e.target;
-
-	pasl.setZone(width, height);
-	drawFavnekon(false);
+const loadURL = (uri) => {
+	try {
+		const { host, protocol, href } = new URL(uri);
+		if (protocol === 'data:' || host === location.host) {
+			Favn3kon.pushKat(href);
+		} else {
+			Favn3kon.requ3st('image:3plz', href);
+		}
+		return true;
+	} catch {
+		return false;
+	}
 }
 
-function imageReset() {
-	image.remove();
+const imageLoad = (blob = null, src = '') => {
+
+	if (blob)
+		src = URL.createObjectURL(blob);
+
+	image.onload = () => {
+		const { width, height } = image;
+		pasl.setZone(width, height);
+		dropbx.replaceChild( pasl.box, ldstub );
+		drawFavnekon(false);
+		image.onload = image.onerror = null;
+	}
+	image.onerror = () => {
+		ldstub.remove();
+		image.alt = 'image source not found';
+		image.onload = image.onerror = null;
+	}
+	image.src = src;
+}
+
+const imageReset = () => {
+	const uri = image.src;
 	pasl.box.remove();
-	if (/^blob\:/.test(image.src))
-		URL.revokeObjectURL(image.src);
+	image.remove();
+	image.removeAttribute('alt');
+	image.src = '';
+	if (uri && /^blob\:/.test(uri))
+		URL.revokeObjectURL(uri);
 }
 
 function fileUpload(e) {
@@ -294,11 +379,12 @@ function fileUpload(e) {
 	var data = e.dataTransfer || e.target,
 		file = data.files[0];
 	if (file && /image\//.test(file.type)) {
-		Favn3kon.pushKat( URL.createObjectURL(file) );
+		dropbx.prepend( ldstub, image );
+		imageLoad(file);
 	}
 }
 
-function drawFavnekon(update = true) {
+function drawFavnekon(upd_ico = false) {
 
 	try {
 		const scale = image.naturalWidth / image.width;
@@ -324,49 +410,36 @@ function drawFavnekon(update = true) {
 			}
 			ctx.drawImage(oc, 0, 0, width, height, 0, 0, Q_HEIGHT, Q_HEIGHT);
 		}
-		const imgData = ctx.getImageData(0, 0, Q_HEIGHT, Q_HEIGHT);
-		let hash = 0, changes = Favn3kon.brightness | Favn3kon.colorAjusts.length;
+		const imgData = ctx.getImageData(0, 0, Q_HEIGHT, Q_HEIGHT),
+		      pixcnt  = imgData.data.length;
 
-		for (let i = 0; i < imgData.data.length; i++) {
-			hash += (Favn3kon.pixelData[i] = imgData.data[i]) + i;
+		let hash = 0, pixelData = new Array(pixcnt);
+
+		for (let i = 0; i < pixcnt; i++) {
+			hash += (pixelData[i] = imgData.data[i]) + i;
 		}
-		if ( changes ) {
+		if ( Favn3kon.brightness || Favn3kon.colorAjusts.length ) {
 			for (const name of Favn3kon.colorAjusts)
 				ColorFilter[name](imgData.data);
 			if (Boolean(Favn3kon.brightness))
 				ColorFilter.expose(imgData.data, Favn3kon.brightness);
 			ctx.putImageData(imgData, 0, 0);
 		}
-		Favn3kon.hash = hash;
-		storeData(update);
+		Favn3kon.storeData({ hash, pixelData }, upd_ico);
 	} catch (err) {
-		console.info(err)
+		console.error(err)
 	}
 }
 
-function applyFilters() {
+function applyFilters(brightness = 0) {
 	const ctx = canvas.getContext('2d'),
 	   pixels = imgDataCpy(ctx, Favn3kon.pixelData);
 
 	for (const name of Favn3kon.colorAjusts)
 		ColorFilter[name](pixels.data);
 
-	ColorFilter.expose(pixels.data, Favn3kon.brightness);
+	ColorFilter.expose(pixels.data, brightness);
 	ctx.putImageData(pixels, 0, 0);
-}
-
-function storeData(update = false) {
-	const { apply, hash, pixelData, brightness, colorAjusts } = Favn3kon;
-	
-	if (apply)
-		link.href = canvas.toDataURL();
-	
-	chrome.runtime.sendMessage({
-		name: (update ? 'upd:3plz' : 'save:3plz'),
-		data: {
-			apply, hash, pixelData, brightness, colorAjusts
-		}
-	});
 }
 
 function imgDataCpy(contxt, pixelArray) {
@@ -379,14 +452,45 @@ function imgDataCpy(contxt, pixelArray) {
 	return imgData;
 }
 
-if (!('width' in DOMRect.prototype)){
-	Object.defineProperty(DOMRect.prototype, 'width', {
-		configurable: true,
-		enumerable: true,
-		get: function width() {
-			const value = this.right - this.left;
-			Object.defineProperty(this, 'width', { value });
-			return value;
-		}
-	});
+function getLoadingIcon() {
+
+	return `
+	<svg class="svg-iload" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="200px" height="200px" viewBox="0 0 100 100">
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6">
+	  <animate attributeName="opacity" begin="-0.9s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(30 50 50)">
+	  <animate attributeName="opacity" begin="-0.8s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(60 50 50)">
+	  <animate attributeName="opacity" begin="-0.75s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(90 50 50)">
+	  <animate attributeName="opacity" begin="-0.6s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(120 50 50)">
+	  <animate attributeName="opacity" begin="-0.6s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(150 50 50)">
+	  <animate attributeName="opacity" begin="-0.5s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(180 50 50)">
+	  <animate attributeName="opacity" begin="-0.4s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(210 50 50)">
+	  <animate attributeName="opacity" begin="-0.3s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(240 50 50)">
+	  <animate attributeName="opacity" begin="-0.25s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(270 50 50)">
+	  <animate attributeName="opacity" begin="-0.15s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(300 50 50)">
+	  <animate attributeName="opacity" begin="-0.1s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	<rect width="2" height="12" x="49" y="24" rx="1" ry="6" transform="rotate(330 50 50)">
+	  <animate attributeName="opacity" begin="0s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+	</rect>
+	</svg>`;
 }

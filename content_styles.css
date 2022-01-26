@@ -1,52 +1,56 @@
-#nk3__shadowBoxOverlay {
-	position: fixed;
-	z-index: 9999999999999999999999999999;
-	height: 0;
-	width: 100%;
-	left: 0;
-	top: 0;
-}
-#nk3__addURLInput {
-	top: 20px;
-	width: auto;
+
+#nk3__Input {
 	color: #555;
 	height: 34px;
-	font-size: 14px;
-	padding: 6px 12px;
+	margin: 0;
 	border-radius: 4px;
-	display: inline-block;
-	line-height: 1.4;
-	background-color: #fff;
-	background-image: none;
-	border: 1px solid #ccc;
-	position: relative;
-	top: -10px;
-	left: -10px;
-	width: 99%;
-	box-shadow: 1px 1px 2px #ccc;
+	background-color: white;
+	border: none;
+	position: absolute;
+	top: 0;
+	left: -2px;
+	right: -2px;
+	box-shadow: 1px 1px 2px #aaa;
 	box-sizing: content-box;
+	cursor: text;
+	overflow: hidden;
 	outline: none;
 }
-#nk3__overlayCloseBtn {
+#nk3__Input:before, #nk3__Input:after { color: #bbb; }
+#nk3__Input:empty:before {
+	content: 'Image URL @ clear';
+}
+#nk3__Input[autocomp]:after {
+	content: attr(autocomp);
+}
+#nk3__magCard:before, #nk3__Input {
+	content: '= ^ =';
+	line-height: 34px;
+	font-size: 18px;
+	padding: 6px 12px;
+	display: block;
+}
+
+#nk3__CloseBtn {
 	transition: .5s ease;
 	opacity: .6;
 	cursor: pointer;
 	position: absolute;
 	top: 0;
-	right: 0;
+	right: -2px;
 	padding: 2px 9px 5px;
 	border-radius: 0 5px;
 	color: #555;
-	font-size: 12px;
+	font: 12px monospace;
 }
-#nk3__overlayCloseBtn:before {
+#nk3__CloseBtn:before {
 	content: "x";
 }
-#nk3__overlayCloseBtn:hover {
+#nk3__CloseBtn:hover {
 	color: #fff;
 	background-color: black;
 }
-#nk3__magnethingCard {
+#nk3__magCard {
 	background-color: #ebebeb;
 	box-shadow: 0 9px 19px -8px rgba(0,0,0,.8), inset 0 0 90px 3px #fff;
 	position: relative;
@@ -57,15 +61,20 @@
 	border-radius: 5px;
 	padding: 10px;
 }
-#nk3__workaroundImage {
+#nk3__wkImage {
 	min-width: 125px;
 	min-height: auto;
 	max-width: 450px;
 }
-#nk3__resizeboxOverlay {
-	position: absolute;
+#nk3__wkImage[alt] {
+	color: #e26c6c;
+	font-weight: bold;
+	background-color: #502828;
+	padding: 2px 4px;
 }
-#nk3__dropDownArrow {
+#nk3__dropArrow {
+	display: block;
+	margin-left: 20px;
 	border: 3px dashed #8a92a5;
 	border-radius: 10px;
 	cursor: pointer;
@@ -73,41 +82,35 @@
 	height: 150px;
 	background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpza2V0Y2g9Imh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaC9ucyIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjE1MHB4IiB2aWV3Qm94PSIwIDAgMjAwIDE1MCIgdmVyc2lvbj0iMS4xIj48cGF0aCBkPSJNMTM5LjcsNTkuOCBMMTM5LjcsNjYuNCBMMTUzLjUsNjYuNCBMOTkuOSw5MC43IEw0Ni4zLDY2LjQgTDYxLjcsNjYuNCBMNjEuNyw1OS44IEwxMzkuNyw1OS44IFoiIGZpbGw9IiM4QTkyQTUiLz48L3N2Zz4=');
 }
-
-* + #nk3__dropDownArrow {
+* + #nk3__dropArrow {
 	display: none;
 }
 
-.tb-sect {
-	display: inline-block;
-}
-
-citab {
+#nk3__Prefs {
 	padding-right: 10px;
-	display: table-cell;
 }
-
-droparea {
+#nk3__DropBox {
 	width: 100%;
-	display: table-cell;
 	border-left: 1px dashed #bbb;
 }
 
-droparea > #nk3__dropDownArrow {
-	margin-left: 10px;
+.svg-iload rect {
+	fill: #8a92a5;
 }
-
-droparea:before, citab:before {
+.ci-tab {
+	display: table-cell;
+}
+.ci-tab:before {
 	content: "";
 	display: table-row;
 }
 
-.block {
+#nk3__exSlider {
 	top: -1px;
 	padding: 1px;
 	position: absolute;
 }
-.block:before {
+#nk3__exSlider:before {
 	content: "";
 	left: -4px;
 	top: -4px;
@@ -116,7 +119,7 @@ droparea:before, citab:before {
 	position: absolute;
 }
 
-.brithnes:before {
+#nk3__Expose:before {
 	content: "";
 	padding: 3px 0;
 	top: -4px;
@@ -125,15 +128,14 @@ droparea:before, citab:before {
 	border-right-color: #fff;
 	position: absolute;
 }
-
-.brithnes {
+#nk3__Expose {
 	border: 1px solid #ccc;
 	border-bottom-color: #fff;
 	margin: 8px 0;
 	position: relative;
 }
 
-.pre-fav {
+.nk3-ico {
 	border: 1px dashed transparent!important;
 	padding: 5px;
 	border-radius: 8px;
@@ -143,28 +145,24 @@ droparea:before, citab:before {
 	max-width: 18px;
 	max-height: 18px;
 }
-
-.pre-fav.ch-x-k {
+.nk3-ico.ch-x-k {
 	border-color: #ccc!important;
 }
 
-.fill-fav {
+.nk3-filter {
 	cursor: pointer;
 	font: 14px serif;
 	color: #8a92a5;
 }
-
-.fill-fav:before {
-	content: "▫";
-	position: absolute;
-	left: 1px;
+.nk3-filter:before {
+	content: '';
+	position: relative;
+	padding: 0 2px; 
+	left: -4px;
 }
-
-.fill-fav.ch-x-k:before {
-	content: "▪";
-	color: green;
+.nk3-filter.ch-x-k:before {
+	background-color: green;
 }
-
-.fill-fav:after {
+.nk3-filter:after {
 	content: attr(itemprop);
 }

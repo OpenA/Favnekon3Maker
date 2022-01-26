@@ -10,17 +10,15 @@ if (typeof browser === 'undefined') {
 	let [, major = 0] = navigator.userAgent.match(/Firefox\/(\d+)\./);
 	var SUPPORT_TAB_FILTERS = Number(major) >= 61;
 }
-const TAB_ID_NONE = browser.tabs.TAB_ID_NONE;
-const DB_N3       = 'n3kFF';
-
-const Load_Start = Object.create(null);
-const Data_Apply = Object.create(null);
+const _Applies_  = Object.create(null);
+const _Resolves_ = Object.create(null);
+const _Connects_ = new Map;
 
 const dbStor3 = {
 	save: (id, data) => {
 
 		const hash = data.hash;
-		const apply = (Data_Apply[id] = data.apply);
+		const apply = (_Applies_[id] = data.apply);
 		const pixelData = Uint8ClampedArray.from(data.pixelData);
 
 		kon3ktDB().then(db => {
@@ -80,53 +78,52 @@ kon3ktDB().then(db => {
 	const tab_pr = tr.objectStore('tabs_params').getAll();
 	tab_pr.onsuccess = () => {
 		for (const params of tab_pr.result)
-			Data_Apply[params.id] = params.apply;
+			_Applies_[params.id] = params.apply;
 	}
 });
 
-const _Resolves_ = new Map;
-const _Connects_ = new Map;
+// Set up connections between content and background
+browser.runtime.onConnect.addListener(port => {
+	const id = port.sender.tab.id,
+	     res = _Resolves_[id];
+	port.onMessage.addListener(onMessageHandler);
+	port.onDisconnect.addListener(() => {
+		_Connects_.delete(id);
+	});
+	dbStor3.load(id).then(data => {
+		port.postMessage({ action: 'initM3', data });
+	});
+	if (res) res(port);
+	delete _Resolves_[id];
+});
+
 const addContext = () => {
 	browser.contextMenus.create({'title': browser.i18n.getMessage('menuPageContxt'), 'id': 'pagecontext'});
 	browser.contextMenus.create({'title': browser.i18n.getMessage('menuImageContxt'), 'contexts': ['image'], 'id': 'imagecontext'});
 	browser.contextMenus.create({'title': 'draww', 'id': 'drawwcontext'});
 }
 
+const onTabUpdate = (tab_id, tab_p) => {
+	const { status } = tab_p;
+
+	if (status === 'complete' && _Applies_[tab_id]) {
+		getConnect(tab_id).then(port => {
+			port.postMessage({ action: 'put3kon', data: true })
+		});
+	}
+};
+
 // Set up onClick menu item action.
 browser.contextMenus.onClicked.addListener(onClickHandler);
-// Set up request application action.
-browser.runtime.onMessage.addListener(onMessageHandler);
 // Set up context menu tree at install time.
 browser.runtime.onInstalled.addListener(addContext);
 // Set up context menu tree at browser startup.
 browser.runtime.onStartup.addListener(addContext);
 // Set up open/reload tab handler.
-if (SUPPORT_TAB_FILTERS) {
-	browser.tabs.onUpdated.addListener(onStatusUpdate, {
-		urls: ['http://*/*', 'https://*/*', 'file:///*/*'],
-		properties: ['status']
-	});
-} else {
-	browser.tabs.onUpdated.addListener(onStatusUpdate);
-}
-
-function onStatusUpdate(tab_id, { status, url }) {
-	switch (status) {
-		case 'loading':
-			if (!url)
-				_Connects_.delete(tab_id);
-			if (!Load_Start[tab_id] && (!SUPPORT_TAB_FILTERS || !!url)) {
-				if (Data_Apply[tab_id])
-					_Connects_.set(tab_id, InjectScripts(tab_id));
-				Load_Start[tab_id] = true;
-			}
-			break;
-		case 'complete':
-			if (Data_Apply[tab_id])
-				browser.tabs.sendMessage(tab_id, { action: 'put3kon', data: true });
-			Load_Start[tab_id] = false;
-	}
-}
+if (SUPPORT_TAB_FILTERS)
+	browser.tabs.onUpdated.addListener(onTabUpdate, { properties: ['status'] });
+else
+	browser.tabs.onUpdated.addListener(onTabUpdate);
 
 function onClickHandler({ menuItemId, pageUrl, srcUrl }, tab) {
 
@@ -144,75 +141,57 @@ function onClickHandler({ menuItemId, pageUrl, srcUrl }, tab) {
 				protocol !== 'data:' && host !== new URL(pageUrl).host
 			);
 		case 'pagecontext':
-			sendDataTo(tab.id, href, needload);
+			Promise.all([
+				getConnect(tab.id), (needload ? LoadDataHTTP(href) : href)
+			]).then(([port, uri]) => {
+				port.postMessage({ action : 'pushKat', data: uri });
+			});
 	}
 }
 
-function onMessageHandler({ name, data }, { tab }) {
-	const tab_id = tab.id;
-	switch (name) {
-		case 'n3kon3kt':
-			dbStor3.load(tab_id).then(params => {
-				browser.tabs.sendMessage(tab_id, {
-					action : 'initMe',
-					data   : params
-				});
-			});
-			_Resolves_.get(tab_id)();
-			_Resolves_.delete(tab_id);
-			break;
+function onMessageHandler({ action, data }, port) {
+	const tab_id = port.sender.tab.id;
+	switch (action) {
 		case'upd:3plz':
 			dbStor3.purge(tab_id);
 		case 'save:3plz':
 			dbStor3.save(tab_id, data);
 			break;
 		case 'image:3plz':
-			sendDataTo(tab_id, data, true);
+			LoadDataHTTP(data).then(base64 => {
+				port.postMessage({ action: 'pushKat', data: base64 });
+			});
 	}
 }
 
-function sendDataTo(tab_id = TAB_ID_NONE, url = '', needload = false) {
+function getConnect(tab_id = -1) {
 
-	const isReady = _Connects_.has(tab_id),
-	     tabReady = isReady ? _Connects_.get(tab_id) : InjectScripts(tab_id);
+	if (tab_id < 0)
+		return Promise.reject();
+	if (_Connects_.has(tab_id))
+		return _Connects_.get(tab_id);
 
-	if (!isReady)
-		_Connects_.set(tab_id, tabReady);
-	if (needload) {
-		LoadDataHTTP(url).then(base64 => {
-			tabReady.then(() => {
-				browser.tabs.sendMessage(tab_id, {
-					action : 'pushKat',
-					data   : base64
-				});
-			});
-		});
-	} else {
-		tabReady.then(() => {
-			browser.tabs.sendMessage(tab_id, {
-				action : 'pushKat',
-				data   : url 
-			});
-		});
-	}
-}
-
-function InjectScripts(tab_id = TAB_ID_NONE) {
-	return new Promise(resolve => {
-		_Resolves_.set(tab_id, resolve);
+	const promise = new Promise(resolve => {
+		_Resolves_[tab_id] = resolve;
 		browser.tabs.insertCSS(tab_id, {
-			allFrames: false, file: 'tools/pasL/pasL.css'
+			allFrames: false, runAt: 'document_end',
+			file: 'tools/pasL/pasL.css'
 		});
 		browser.tabs.executeScript(tab_id, {
-			allFrames: false, file: 'tools/pasL/pasL.js'
+			allFrames: false, runAt: 'document_start',
+			file: 'tools/pasL/pasL.js'
 		});
 		browser.tabs.insertCSS(tab_id, {
-			allFrames: false, file: 'content_styles.css'
+			allFrames: false, runAt: 'document_end',
+			file: 'content_styles.css'
 		});
 		browser.tabs.executeScript(tab_id, {
-			allFrames: false, file: 'content_script.js'
+			allFrames: false, runAt: 'document_end',
+			file: 'content_script.js'
 		});
 	});
+	_Connects_.set(tab_id, promise);
+	return promise;
 }
 
 function LoadDataHTTP(url = '') {
@@ -235,7 +214,7 @@ function LoadDataHTTP(url = '') {
 
 function kon3ktDB() {
 	return new Promise((resolve, reject) => {
-		const dbReq = indexedDB.open(DB_N3, 1); // db version
+		const dbReq = indexedDB.open('n3kFF', 1); // db version
 		dbReq.onerror = () => reject(dbReq.error);
 		dbReq.onsuccess = () => resolve(dbReq.result);
 		dbReq.onupgradeneeded = () => {
