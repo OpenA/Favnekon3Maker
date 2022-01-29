@@ -174,20 +174,21 @@ function getConnect(tab_id = -1) {
 	const promise = new Promise(resolve => {
 		_Resolves_[tab_id] = resolve;
 		browser.tabs.insertCSS(tab_id, {
-			allFrames: false, runAt: 'document_end',
+			allFrames: false, runAt: 'document_start',
 			file: 'tools/pasL/pasL.css'
 		});
 		browser.tabs.executeScript(tab_id, {
 			allFrames: false, runAt: 'document_start',
 			file: 'tools/pasL/pasL.js'
-		});
-		browser.tabs.insertCSS(tab_id, {
-			allFrames: false, runAt: 'document_end',
-			file: 'content_styles.css'
-		});
-		browser.tabs.executeScript(tab_id, {
-			allFrames: false, runAt: 'document_end',
-			file: 'content_script.js'
+		}, () => {
+			browser.tabs.insertCSS(tab_id, {
+				allFrames: false, runAt: 'document_end',
+				file: 'content_styles.css'
+			});
+			browser.tabs.executeScript(tab_id, {
+				allFrames: false, runAt: 'document_end',
+				file: 'content_script.js'
+			});
 		});
 	});
 	_Connects_.set(tab_id, promise);
