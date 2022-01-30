@@ -95,6 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	const edit_z = document.getElementById('editable_zone');
 	const ondown = winHasPointer ? 'pointerdown' : winHasTouch ? 'touchstart' : 'mousedown';
 
+	const scale_val = document.getElementById('scale_val');
+
+	let m_scale = 0;
+
 	gl_params.addEventListener('change', ({ target }) => {
 		let [ key, param, val ] = target.id.split('_');
 
@@ -177,26 +181,51 @@ document.addEventListener('DOMContentLoaded', () => {
 			code.contentEditable = false;
 		}
 	});
-	edit_z.addEventListener('click', e => {
-		const el = e.target, [cls_main, cls_sec] = el.classList;
-		switch (cls_main) {
-		case 'file-area':
-			if (wrkimg.src){
-				const url = wrkimg.src;
-				wrkimg.removeAttribute('src');
-				crop.box.remove();
-				if (/^blob\:/.test(url))
-					URL.revokeObjectURL(url);
-			} else
-				gl_elems.file_upload.click();
+
+	const reScaleImage = s => {
+		let per = Math.round(s * 100);
+		scale_val.textContent = per.toString();
+		wrkimg.width  = wrkimg.naturalWidth * s,
+		wrkimg.height = wrkimg.naturalHeight * s;
+		crop.setZone(wrkimg.width, wrkimg.height);
+		m_scale = s;
+	}
+
+	edit_z.children[1].addEventListener('click', e => {
+		const el = e.target, el_class = el.classList;
+
+		if (el_class[0] === 'clear-img') {
+			edit_z.classList.remove('active');
+			let src = wrkimg.src; wrkimg.src = '';
+			//crop.box.remove();
+			if (/^blob\:/.test(src))
+				URL.revokeObjectURL(src);
+		} else if (el.id.substring(0, 'scale'.length) === 'scale') {
+			let pat = el.id.substring('scale'.length + 1), val = 1;
+			if (pat === 'down') {
+				val = m_scale - .05,
+				val = val <= 0 ? .05 : m_scale > 1.5 ? val - .05 : val;
+			} else if (pat === 'up') {
+				val = m_scale + .05,
+				val = val >= 5 ? m_scale : m_scale >= 1.5 ? val + .05 : val;
+			}
+			reScaleImage(val);
 		}
 	});
+
 	wrkimg.addEventListener('load', () => {
 
-		const { width, height } = wrkimg;
+		const { innerWidth, innerHeight } = window;
+
+		const { width, height, naturalWidth } = wrkimg,
+		        rate = width / naturalWidth;
+
+		scale_val.textContent = Math.round((m_scale = rate) * 100).toString();
 
 		crop.setZone(width, height);
-		wlayer.prepend(crop.box);
+
+		edit_z.classList.add('active');
+		wrkimg.before(crop.box);
 		outbtn.id = 'out_apply';
 	});
 

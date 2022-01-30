@@ -1,6 +1,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0">
 		<title>Simpl3 Drawwing Tool</title>
 		<link rel="icon" href="../^з^.png" type="image/png">
 		<link rel="stylesheet" type="text/css" href="css/draww.css" async>
@@ -114,9 +115,21 @@
 		</div>
 		<div id="editable_zone">
 			<div class="img-area">
-				<img id="work_img">
-				<div id="work_layer"></div>
-				<div class="file-area"></div>
+				<div id="work_layer" style="left: 0; top: 0; position: relative;">
+					<img id="work_img" src>
+				</div>
+			</div>
+			<div class="ctrl-area">
+				<div class="clear-img over-btn"></div>
+				<div class="scale-img over-btn">
+					<div id="scale_down"></div>
+					<div id="scale_val">100</div>
+					<div id="scale_up"></div>
+				</div>
+			</div>
+			<div class="drop-area">
+				<label for="file_upload"></label>
+				<code id="file_url" contenteditable="true"></code>
 			</div>
 		</div>
 	</body>
