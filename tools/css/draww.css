@@ -1,10 +1,12 @@
 
+html, body {
+	width: 100%;
+	height: 100%;
+}
 body {
 	background: #eee;
 	box-shadow: inset 0 0 60em #777;
-	width: 100%;
-	height: 100%;
-	margin: 0;
+	margin: 0; padding: 0;
 	display: flex;
 }
 
@@ -12,6 +14,7 @@ body {
 	background: #eee;
 	box-shadow: 2px 0 20px -10px black;
 	flex: 0 0; z-index: 1;
+	position: relative;
 }
 #editable_zone {
 	flex: 1 1; z-index: 0;
@@ -48,8 +51,7 @@ body {
 }
 .out-btn {
 	position: absolute;
-	bottom: 0;
-	right: 0;
+	bottom: 0; right: 0;
 	color: white;
 	border-top-left-radius: 5px;
 }
@@ -172,7 +174,7 @@ label[for="file_upload"] {
 	height: 100%;
 }
 #work_layer {
-	background: white url('fonico/mico/alpha-grid.svg') repeat center / 10px;
+	background: white url('fonico/mico/alpha-grid.svg') repeat center / 20px;
 }
 
 .macro-text {
