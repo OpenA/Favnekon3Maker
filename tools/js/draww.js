@@ -7,7 +7,7 @@ const GLOBAL_PARAMS = {
 	texts: []
 };
 
-const crop = new PasL({ lock: false, edgies: true });
+const crop = new PasL({ lock: 2, edgies: true });
 
 const TEXT_OBJECT = {
 	curr_el: null,
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const wrkimg = document.getElementById('work_img');
 	const wlayer = document.getElementById('work_layer');
 	const edit_z = document.getElementById('editable_zone');
-	const ondown = winHasPointer ? 'pointerdown' : winHasTouch ? 'touchstart' : 'mousedown';
+	const ondown = winHasPointer ? 'pointerdown' : winHasMultiTouch ? 'touchstart' : 'mousedown';
 
 	const scale_val = document.getElementById('scale_val');
 
