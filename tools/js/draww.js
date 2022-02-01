@@ -185,9 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	const reScaleImage = s => {
 		let per = Math.round(s * 100);
 		scale_val.textContent = per.toString();
-		wrkimg.width  = wrkimg.naturalWidth * s,
-		wrkimg.height = wrkimg.naturalHeight * s;
-		crop.setZone(wrkimg.width, wrkimg.height);
+		wlayer.style.width  = wrkimg.naturalWidth * s +'px',
+		wlayer.style.height = wrkimg.naturalHeight * s +'px';
+		crop.updZone(wrkimg);
 		m_scale = s;
 	}
 
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		scale_val.textContent = Math.round((m_scale = rate) * 100).toString();
 
-		crop.setZone(width, height);
+		crop.setZone(wrkimg);
 
 		edit_z.classList.add('active');
 		wrkimg.before(crop.box);

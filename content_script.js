@@ -350,8 +350,7 @@ const imageLoad = (blob = null, src = '') => {
 		src = URL.createObjectURL(blob);
 
 	image.onload = () => {
-		const { width, height } = image;
-		pasl.setZone(width, height);
+		pasl.setZone(image);
 		dropbx.replaceChild( pasl.box, ldstub );
 		drawFavnekon(false);
 		image.onload = image.onerror = null;
