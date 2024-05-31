@@ -113,6 +113,12 @@ const onTabUpdate = (tab_id, tab_p) => {
 	}
 };
 
+const execScripts = (tab_id, at, js_list) => Promise.all(
+	js_list.map(file => browser.tabs.executeScript(tab_id, {
+		allFrames: false, runAt: 'document_'+ at, file
+	}))
+);
+
 // Set up onClick menu item action.
 browser.contextMenus.onClicked.addListener(onClickHandler);
 // Set up context menu tree at install time.
@@ -132,7 +138,7 @@ function onClickHandler({ menuItemId, pageUrl, srcUrl }, tab) {
 	switch (menuItemId) {
 		case 'drawwcontext':
 			browser.tabs.create({
-				url: browser.runtime.getURL('tools/draww.html'), active: true
+				url: browser.runtime.getURL('tools/draww/editor.html'), active: true
 			});
 			break;
 		case 'imagecontext':
@@ -175,18 +181,18 @@ function getConnect(tab_id = -1) {
 		_Resolves_[tab_id] = resolve;
 		browser.tabs.insertCSS(tab_id, {
 			allFrames: false, runAt: 'document_start',
-			file: 'tools/pasL/pasL.css'
+			file: 'tools/draww/pasL/pasL.css'
 		});
-		browser.tabs.executeScript(tab_id, {
-			allFrames: false, runAt: 'document_start',
-			file: 'tools/pasL/pasL.js'
-		}, () => {
+		execScripts(tab_id, 'start', [
+			'tools/draww/js/moriya-tools.js',
+			'tools/draww/pasL/pasL.js'
+		]).then(() => {
 			browser.tabs.insertCSS(tab_id, {
-				allFrames: false, runAt: 'document_end',
+				allFrames: false, runAt: 'document_idle',
 				file: 'content_styles.css'
 			});
 			browser.tabs.executeScript(tab_id, {
-				allFrames: false, runAt: 'document_end',
+				allFrames: false, runAt: 'document_idle',
 				file: 'content_script.js'
 			});
 		});
