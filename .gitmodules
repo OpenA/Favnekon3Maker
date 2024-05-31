@@ -1,6 +1,3 @@
-[submodule "tools/pasL"]
-	path = tools/pasL
-	url = https://github.com/OpenA/pasL.git
-[submodule "tools/css/fonico"]
-	path = tools/css/fonico
-	url = https://github.com/OpenA/fonico.git
+[submodule "tools/draww"]
+	path = tools/draww
+	url = https://github.com/OpenA/moriya-dom.git
