@@ -1,0 +1,17 @@
+<svg viewBox="0 0 180 180" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid">
+	<defs>
+		<rect id="r" fill="#8A92A5" width="4" height="24" x="98" y="48" rx="2" ry="12"/>
+	</defs>
+	<use xlink:href="#r"><!-- ********************* --><animate begin="-.9s"  dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate( 30 86 86)"><animate begin="-.8s"  dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate( 60 86 86)"><animate begin="-.75s" dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate( 90 86 86)"><animate begin="-.6s"  dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate(120 86 86)"><animate begin="-.6s"  dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate(150 86 86)"><animate begin="-.5s"  dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate(180 86 86)"><animate begin="-.4s"  dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate(210 86 86)"><animate begin="-.3s"  dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate(240 86 86)"><animate begin="-.25s" dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate(270 86 86)"><animate begin="-.15s" dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate(300 86 86)"><animate begin="-.1s"  dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+	<use xlink:href="#r" transform="rotate(330 86 86)"><animate begin="0s"    dur="1s" repeatCount="indefinite" attributeName="opacity" keyTimes="0;1" values="1;0"/></use>
+</svg>

@@ -10,6 +10,7 @@ if (typeof browser === 'undefined') {
 	let [, major = 0] = navigator.userAgent.match(/Firefox\/(\d+)\./);
 	var SUPPORT_TAB_FILTERS = Number(major) >= 61;
 }
+const is_APIv3   = 3 === browser.runtime.getManifest().manifest_version;
 const _Applies_  = Object.create(null);
 const _Resolves_ = Object.create(null);
 const _Connects_ = new Map;
@@ -91,7 +92,7 @@ browser.runtime.onConnect.addListener(port => {
 		_Connects_.delete(id);
 	});
 	dbStor3.load(id).then(data => {
-		port.postMessage({ action: 'initM3', data });
+		port.postMessage({ action: 'init:3now', data });
 	});
 	if (res) res(port);
 	delete _Resolves_[id];
@@ -113,18 +114,21 @@ const onTabUpdate = (tab_id, tab_p) => {
 	}
 };
 
-const execScripts = (tab_id, at, js_list) => Promise.all(
+const execScripts = is_APIv3
+? (tabId, files) => browser.scripting.executeScript({
+	target: { tabId, allFrames: false }, files
+})
+: (tab_id, js_list) => Promise.all(
 	js_list.map(file => browser.tabs.executeScript(tab_id, {
-		allFrames: false, runAt: 'document_'+ at, file
-	}))
-);
+		allFrames: false, file, runAt: 'document_start'
+	})));
 
 // Set up onClick menu item action.
 browser.contextMenus.onClicked.addListener(onClickHandler);
 // Set up context menu tree at install time.
 browser.runtime.onInstalled.addListener(addContext);
 // Set up context menu tree at browser startup.
-browser.runtime.onStartup.addListener(addContext);
+// browser.runtime.onStartup.addListener(addContext);
 // Set up open/reload tab handler.
 if (SUPPORT_TAB_FILTERS)
 	browser.tabs.onUpdated.addListener(onTabUpdate, { properties: ['status'] });
@@ -150,7 +154,7 @@ function onClickHandler({ menuItemId, pageUrl, srcUrl }, tab) {
 			Promise.all([
 				getConnect(tab.id), (needload ? LoadDataHTTP(href) : href)
 			]).then(([port, uri]) => {
-				port.postMessage({ action : 'pushKat', data: uri });
+				port.postMessage({ action : 'open:3now', data: uri });
 			});
 	}
 }
@@ -165,7 +169,7 @@ function onMessageHandler({ action, data }, port) {
 			break;
 		case 'image:3plz':
 			LoadDataHTTP(data).then(base64 => {
-				port.postMessage({ action: 'pushKat', data: base64 });
+				port.postMessage({ action: 'load:3now', data: base64 });
 			});
 	}
 }
@@ -179,22 +183,13 @@ function getConnect(tab_id = -1) {
 
 	const promise = new Promise(resolve => {
 		_Resolves_[tab_id] = resolve;
-		browser.tabs.insertCSS(tab_id, {
-			allFrames: false, runAt: 'document_start',
-			file: 'tools/draww/pasL/pasL.css'
-		});
-		execScripts(tab_id, 'start', [
+		execScripts(tab_id, [
 			'tools/draww/js/moriya-tools.js',
-			'tools/draww/pasL/pasL.js'
+			'tools/draww/js/suwako-opts.js',
+			'tools/draww/pasL/pasL.js',
+			'tools/js/favn3kon.js'
 		]).then(() => {
-			browser.tabs.insertCSS(tab_id, {
-				allFrames: false, runAt: 'document_idle',
-				file: 'content_styles.css'
-			});
-			browser.tabs.executeScript(tab_id, {
-				allFrames: false, runAt: 'document_idle',
-				file: 'content_script.js'
-			});
+			execScripts(tab_id, ['content_script.js']);
 		});
 	});
 	_Connects_.set(tab_id, promise);

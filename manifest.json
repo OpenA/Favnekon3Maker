@@ -1,20 +1,24 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "Favnekon3 Maker",
 	"description": "__MSG_appDesc__",
 	"version": "3.2",
 	"default_locale": "en_US",
 	"background": {
-		"persistent": false,
-		"scripts": ["background.js"]
+		"service_worker": "background.js"
 	},
-	"browser_action": {
+	"action": {
 	  "default_icon": "^з^.png",
 	  "default_popup": "popup_db.html"
 	},
+	"web_accessible_resources": [{
+		"resources": ["tools/*", "content_styles.css"],
+		"matches": ["<all_urls>"]
+	}],
+	"host_permissions": ["<all_urls>"],
 	"permissions": [
 		"contextMenus",
-		"<all_urls>",
+		"scripting",
 		"tabs"
 	],
 	"icons": {
