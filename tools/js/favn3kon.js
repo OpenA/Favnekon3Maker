@@ -14,6 +14,7 @@ class Favn3kon {
 		this.filters = new N3koFilter,
 		this.n3kon3kt = null;
 		this.all_urls_support = true;
+		this.smooth_downscale = true;
 		this.has_overlay = false;
 		this.styles = [];
 	}
@@ -49,6 +50,13 @@ class Favn3kon {
 		document.head.append(i3ko);
 	}
 
+	cpySourceData(src = this.i3koData) {
+		const dst = this.context.createImageData(Q_HEIGHT, Q_HEIGHT);
+		for(let i = 0; i < dst.data.length; i++)
+			dst.data[i] = src[i];
+		return dst;
+	}
+
 	bind3elem() {
 		const { overlay, filters, apply, bright, def_ico } = this;
 		const prefs = overlay.shadowRoot.getElementById('nk3__Prefs').children;
@@ -64,11 +72,10 @@ class Favn3kon {
 	}
 
 	init3m({ apply, pixelData, brightness, colorAjusts, hash }) {
-		const { filters, canvas, i3koData, has_overlay } = this;
+		const { filters, context, i3koData, has_overlay } = this;
 
 		if (pixelData) {
-			const contxt = canvas.getContext('2d', { willReadFrequently: true }),
-				  pixels = contxt.getImageData(0,0, Q_HEIGHT, Q_HEIGHT);
+			const pixels = context.createImageData(Q_HEIGHT, Q_HEIGHT);
 
 			if (colorAjusts.length) {
 				for (let i = 0; i < colorAjusts.length; i++) {
@@ -88,7 +95,7 @@ class Favn3kon {
 				expose.firstElementChild.style.left = `${ pct + 50 }%`;
 			}
 			this.hash = hash, this.apply = apply;
-			contxt.putImageData(pixels, 0,0);
+			context.putImageData(pixels, 0,0);
 			if (has_overlay)
 				this.bind3elem();
 		}
@@ -147,15 +154,14 @@ class Favn3kon {
 		}
 	}
 	toggleFilter(name, do_add = false) {
-		const { bright, canvas, filters } = this;
-		const context = canvas.getContext('2d'),
-			   pixels = Uint8ClampedArray.from(this.i3koData);
+		const { bright, context, filters } = this;
+		const pixels = this.cpySourceData();
 		if (do_add)
 			filters.push(name);
 		else
 			filters.splice(filters.indexOf(name),1);
-		filters.applyFilters(pixels, bright);
-		context.putImageData(new ImageData(pixels, Q_HEIGHT), 0, 0);
+		filters.applyFilters(pixels.data, bright);
+		context.putImageData(pixels, 0, 0);
 	}
 
 	get pasl() {
@@ -173,6 +179,11 @@ class Favn3kon {
 		canvas.width = canvas.height = Q_HEIGHT;
 		Object.defineProperty(this, 'canvas', { enumerable: true, value: canvas });
 		return canvas;
+	}
+	get context() {
+		const context = this.canvas.getContext('2d');
+		Object.defineProperty(this, 'context', { enumerable: true, value: context });
+		return context;
 	}
 	get overlay() {
 		const { canvas:canvs, styles } = this;
@@ -284,8 +295,8 @@ class Favn3kon {
 	barChange(bar, startX) {
 		const { left, width } = bar.getBoundingClientRect();
 		const { style } = bar.firstElementChild;
-		const context = this.canvas.getContext('2d');
-		const source = Uint8ClampedArray.from(this.i3koData);
+		const { context, filters } = this;
+		const source = this.cpySourceData();
 
 		let brightness = 0; style.backgroundColor = 'green';
 	
@@ -304,15 +315,15 @@ class Favn3kon {
 				style.left = `${pct}%`;
 				brightness = pct - 50;
 			};
-			const pixels = Uint8ClampedArray.from(source);
-			this.filters.expose(pixels, brightness);
-			context.putImageData(new ImageData(pixels, Q_HEIGHT),0,0)
+			const pixels = this.cpySourceData(source.data);
+			filters.expose(pixels.data, brightness);
+			context.putImageData(pixels, 0,0)
 		};
-		this.filters.applyFilters(source, 0);
+		filters.applyFilters(source.data, 0);
 		barMove(startX);
 
 		MUIDragable.addListener(bar, barMove, false).then(() => {
-			//this.storeData({ brightness });
+			this.storeData({ bright: brightness });
 			style.backgroundColor = 'inherit';
 		});
 	}
