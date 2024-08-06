@@ -11,6 +11,9 @@
 		"description": "Image context menu title.",
 		"message": "Сделать фавикон из этого изображения"
 	},
+	"menuImageDraww": {
+		"message": "Открыть редактор изображений (Alpha)"
+	},
 	"dbCopyTextMSG": {
 		"message": "Кликните на блок и скопируйте из контекстного меню"
 	},

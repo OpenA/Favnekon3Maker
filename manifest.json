@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "Favnekon3 Maker",
 	"description": "__MSG_appDesc__",
-	"version": "3.2",
+	"version": "4.0",
 	"default_locale": "en_US",
 	"background": {
 		"service_worker": "background.js"

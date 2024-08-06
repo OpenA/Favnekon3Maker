@@ -101,7 +101,7 @@ browser.runtime.onConnect.addListener(port => {
 const addContext = () => {
 	browser.contextMenus.create({'title': browser.i18n.getMessage('menuPageContxt'), 'id': 'pagecontext'});
 	browser.contextMenus.create({'title': browser.i18n.getMessage('menuImageContxt'), 'contexts': ['image'], 'id': 'imagecontext'});
-	browser.contextMenus.create({'title': 'draww', 'id': 'drawwcontext'});
+	browser.contextMenus.create({'title': browser.i18n.getMessage('menuImageDraww'), 'id': 'drawwcontext'});
 }
 
 const onTabUpdate = (tab_id, tab_p) => {

@@ -67,7 +67,7 @@ class Favn3kon {
 			prefs.nk3__Default.classList.remove('ch-x-k');
 		}
 		prefs.nk3__Expose.children[0].style.left = `${ bright + 50 }%`;
-		if (def_ico && !prefs.nk3__Default.src)
+		if (def_ico)
 			prefs.nk3__Default.src = def_ico;
 	}
 
@@ -90,16 +90,13 @@ class Favn3kon {
 			for (let i = 0; i  < i3koData.length; i++) {
 				pixels.data[i] = i3koData[i] = pixelData[i];
 			}
-			if (brightness !== 0) {
-				let pct = (this.bright = brightness & 0x7F);
-				expose.firstElementChild.style.left = `${ pct + 50 }%`;
-			}
+			this.bright = brightness;
 			this.hash = hash, this.apply = apply;
 			context.putImageData(pixels, 0,0);
-			if (has_overlay)
-				this.bind3elem();
 		}
 		this.putn3kon(apply);
+		if (has_overlay)
+			this.bind3elem();
 	}
 
 	requ3st(req = '', data = null) {

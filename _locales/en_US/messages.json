@@ -11,6 +11,9 @@
 		"description": "Image context menu title.",
 		"message": "Make favicon from this image"
 	},
+	"menuImageDraww": {
+		"message": "Open in text drawing tool (Alpha)"
+	},
 	"dbCopyTextMSG": {
 		"message": "click on block and use context menu for copy"
 	},
