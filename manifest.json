@@ -8,13 +8,12 @@
 		"service_worker": "background.js"
 	},
 	"action": {
-	  "default_icon": "^з^.png",
+	  "default_icon": "icons/n3k@64.png",
 	  "default_popup": "popup_db.html"
 	},
-	"web_accessible_resources": [{
-		"resources": ["tools/*", "content_styles.css"],
-		"matches": ["<all_urls>"]
-	}],
+	"web_accessible_resources": [
+		{"resources": ["tools/*", "content_styles.css"], "matches": ["<all_urls>"]}
+	],
 	"host_permissions": ["<all_urls>"],
 	"permissions": [
 		"contextMenus",
@@ -22,8 +21,7 @@
 		"tabs"
 	],
 	"icons": {
-		"16" : "^з^.png",
-		"48" : "^з^.png",
-		"128": "^з^.png"
+		"64" : "icons/n3k@64.png",
+		"128": "icons/n3k@128.png"
 	}
 }
